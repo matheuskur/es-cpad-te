@@ -1,0 +1,8 @@
+pandas==3.1.0
+geopandas==1.2.0
+requests==2.34.2
+plotly==7.1.0
+selenium==4.52.0
+streamlit==1.66.1
+notebook==7.6.4
+ipykernel==7.4.0
