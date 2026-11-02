@@ -43,7 +43,7 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 ## Estrutura
 
 ```
-projeto-enchentes/
+.
 ├── README.md
 ├── requirements.txt
 ├── dados/
@@ -60,5 +60,29 @@ projeto-enchentes/
 
 ## Fontes dos dados
 
-- Simulação do INCT SiMAI (`data.json`): _a preencher_
-- Bases externas sobre enchentes no RS: _a preencher_
+### Simulação do INCT SiMAI
+
+- Arquivo: `dados/originais/data_inct_original.json` (originalmente `data.json`)
+- Origem: página Flood — INCT SiMAI, _link a preencher_
+- Data de coleta: _a preencher_
+
+### Renda por pessoa (IBGE, Censo 2022)
+
+- Tabela 8.3 (`dados/originais/Tab8_3.xlsx`): dentro do ZIP `tabelas_xlsx.zip`
+  https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Microdados_e_Areas_de_Ponderacao/Areas_de_Ponderacao/tabelas_xlsx.zip
+- Explicação das áreas de ponderação:
+  https://www.ibge.gov.br/geociencias/organizacao-do-territorio/estrutura-territorial/47848-areas-de-ponderacao.html
+- Lista de tabelas (`dados/originais/lista_tabelas_resultados_gerais_amostra_areas_ponderacao.pdf`): _fonte a confirmar_
+
+### Correspondência entre áreas e bairros (IBGE)
+
+- Agregados básicos por setor censitário (código e nome do bairro, setor e população `v0001`). O ZIP não é versionado no repositório por ser grande (cerca de 15 MB); baixe pelo link:
+  https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_basico_BR_20260520.zip
+- Composição das áreas de ponderação (`dados/originais/composicao_areas_ponderacao_IBGE.xlsx`), que relaciona cada setor à sua área:
+  https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Microdados_e_Areas_de_Ponderacao/Documentacao/%C3%81reas%20de%20pondera%C3%A7%C3%A3o/Composi%C3%A7%C3%A3o%20das%20%C3%81reas%20de%20Pondera%C3%A7%C3%A3o.xlsx
+- Dicionário dos agregados (`dados/originais/dicionario_agregados_setores_censitarios_20260520.xlsx`):
+  https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/dicionario_de_dados_agregados_por_setores_censitarios_20260520.xlsx
+
+### Bases externas sobre enchentes no RS
+
+- _a preencher após a Fase 1_
