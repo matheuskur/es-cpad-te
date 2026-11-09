@@ -38,6 +38,25 @@ Projeto extensionista da disciplina Coleta, Preparação e Análise de Dados (PU
    jupyter notebook
    ```
 
+### Limpeza dos dados do INCT
+
+A partir da raiz do projeto, com o ambiente ativado:
+
+```bash
+python scripts/limpeza_inct.py
+```
+
+O script lê `dados/originais/data_inct_original.json` e gera `dados/processados/inct_limpo.json` (formato longo, ordenado) e `dados/processados/correcoes_inct.csv` (cada valor alterado, com os vizinhos usados). As regras estão descritas em `relatorios/limpeza_dados.md`.
+
+### Notebooks de exploração
+
+Em `notebooks/exploracao/`:
+- `exploracao_inct.ipynb` e `exploracao_dados_processados.ipynb`: parte textual e numérica (formato, estrutura e primeiras linhas).
+- `exploracao_grafica_percentual_*.ipynb`: gráficos em percentual.
+- `exploracao_grafica_quantitativa_*.ipynb`: gráficos com valores absolutos, um por bairro.
+
+Os sufixos `_inct` e `_dados_processados` indicam os dados originais e os processados.
+
 Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `app/`, e os relatórios em `relatorios/`.
 
 ## Estrutura
@@ -50,7 +69,8 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 │   ├── originais/        # dados como vieram (ou instruções de download, se forem grandes)
 │   └── processados/      # dados limpos usados pelo dashboard
 ├── scripts/              # scripts de coleta e limpeza
-├── notebooks/            # EDA
+├── notebooks/
+│   └── exploracao/       # notebooks de EDA (textual e gráfica)
 ├── relatorios/
 │   ├── base_dados.md
 │   ├── limpeza_dados.md
@@ -63,8 +83,7 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 ### Simulação do INCT SiMAI
 
 - Arquivo: `dados/originais/data_inct_original.json` (originalmente `data.json`)
-- Origem: página Flood — INCT SiMAI, _link a preencher_
-- Data de coleta: _a preencher_
+- Origem: página Flood — INCT SiMAI, http://vhlab.com.br/INCT/floods/
 
 ### Renda por pessoa (IBGE, Censo 2022)
 
@@ -72,7 +91,7 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
   https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Microdados_e_Areas_de_Ponderacao/Areas_de_Ponderacao/tabelas_xlsx.zip
 - Explicação das áreas de ponderação:
   https://www.ibge.gov.br/geociencias/organizacao-do-territorio/estrutura-territorial/47848-areas-de-ponderacao.html
-- Lista de tabelas (`dados/originais/lista_tabelas_resultados_gerais_amostra_areas_ponderacao.pdf`): _fonte a confirmar_
+- Lista de tabelas (`dados/originais/lista_tabelas_resultados_gerais_amostra_areas_ponderacao.pdf`): fonte: IBGE, Censo 2022 (resultados gerais da amostra por área de ponderação)
 
 ### Correspondência entre áreas e bairros (IBGE)
 
@@ -83,6 +102,3 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 - Dicionário dos agregados (`dados/originais/dicionario_agregados_setores_censitarios_20260520.xlsx`):
   https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/dicionario_de_dados_agregados_por_setores_censitarios_20260520.xlsx
 
-### Bases externas sobre enchentes no RS
-
-- _a preencher após a Fase 1_
