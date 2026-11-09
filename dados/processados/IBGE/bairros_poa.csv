@@ -1,95 +1,95 @@
 bairro_inct,populacao_inct,status,cd_bairro_ibge,nome_bairro_ibge,setores,populacao_ibge,areas,n_areas,codigo_area,nome_area,renda_media_total,renda_mediana_total,metodo_renda
-Aberta dos Morros,9854,ok,4314902080,Aberta dos Morros,12,9854,4314902027,1,4314902027.0,"Serraria, Aberta dos Morros e Hípica",2283.75,1600.0,área de ponderação
-Agronomia,2677,ok,4314902035,Agronomia,8,2677,4314902039,1,4314902039.0,Agronomia e Lomba Norte,1699.82,975.0,área de ponderação
-Anchieta,791,ok,4314902055,Anchieta,6,791,4314902007,1,4314902007.0,"São Geraldo, Navegantes, Humaitá e Anchieta",2770.43,1930.0,área de ponderação
-Arquipélago,6411,ok,4314902033,Arquipélago,28,6411,4314902006,1,4314902006.0,Arquipélago e Farrapos,1318.86,925.0,área de ponderação
-Auxiliadora,8909,ok,4314902045,Auxiliadora,21,8909,4314902032,1,4314902032.0,Moinhos de Vento e Auxiliadora,10110.21,5500.0,área de ponderação
-Azenha,12064,ok,4314902008,Azenha,33,12064,4314902002,1,4314902002.0,Cidade Baixa e Azenha,4439.59,3333.33,área de ponderação
-Bela Vista,11819,ok,4314902043,Bela Vista,22,11819,4314902005,1,4314902005.0,Mont Serrat e Bela Vista,10133.89,7250.0,área de ponderação
-Belém Novo,9851,ok,4314902073,Belém Novo,20,9851,4314902031,1,4314902031.0,Extremo Sul,1608.61,1100.0,área de ponderação
-Belém Velho,10893,ok,4314902037,Belém Velho,17,10893,4314902028,1,4314902028.0,"Belém Velho, Cascata e Glória",1730.42,1162.25,área de ponderação
-Boa Vista,9254,ok,4314902056,Boa Vista,20,9254,4314902035,1,4314902035.0,"Higienópolis, Boa Vista e Jardim Europa",7411.42,5300.0,área de ponderação
-Boa Vista do Sul,2703,ok,4314902081,Boa Vista do Sul,6,2703,4314902031,1,4314902031.0,Extremo Sul,1608.61,1100.0,área de ponderação
-Bom Jesus,24589,ok,4314902021,Bom Jesus,45,24589,4314902017,1,4314902017.0,Bom Jesus,1615.01,925.0,área de ponderação
-Bom Fim,10160,ok,4314902038,Bom Fim,26,10160,4314902001,1,4314902001.0,"Floresta, Independência, Bom Fim e Farroupilha",4903.91,3750.0,área de ponderação
-Camaquã,17935,ok,4314902023,Camaquã,33,17935,4314902025,1,4314902025.0,Camaquã e Cavalhada,2638.41,1650.0,área de ponderação
-Campo Novo,8743,ok,4314902082,Campo Novo,15,8743,4314902026,1,4314902026.0,Campo Novo e Vila Nova,2401.51,1550.0,área de ponderação
-Cascata,9234,ok,4314902034,Cascata,24,9234,4314902028,1,4314902028.0,"Belém Velho, Cascata e Glória",1730.42,1162.25,área de ponderação
-Cavalhada,25209,ok,4314902022,Cavalhada,52,25209,4314902025,1,4314902025.0,Camaquã e Cavalhada,2638.41,1650.0,área de ponderação
-Centro Histórico,30569,ok,4314902036,Centro Histórico,95,30569,4314902040,1,4314902040.0,Centro Histórico,4862.2,3660.0,área de ponderação
-Chácara das Pedras,5639,ok,4314902059,Chácara das Pedras,10,5639,4314902014,1,4314902014.0,"Três Figueiras, Chácara das Pedras e Vila Jardim",4344.6,2424.0,área de ponderação
-Chapéu do Sol,5547,ok,4314902083,Chapéu do Sol,10,5547,4314902031,1,4314902031.0,Extremo Sul,1608.61,1100.0,área de ponderação
-Cidade Baixa,13014,ok,4314902003,Cidade Baixa,39,13014,4314902002,1,4314902002.0,Cidade Baixa e Azenha,4439.59,3333.33,área de ponderação
-Coronel Aparício Borges,18966,ok,4314902013,Coronel Aparício Borges,32,18966,4314902019,1,4314902019.0,Coronel Aparício Borges e Vila João Pessoa,1661.16,1064.8,área de ponderação
-Costa e Silva,13585,ok,4314902084,Costa e Silva,25,13585,4314902011,1,4314902011.0,"Costa e Silva, Parque Santa Fé e Jardim Leopoldina",1942.05,1400.0,área de ponderação
-Cristal,24851,ok,4314902024,Cristal,60,24851,4314902023,1,4314902023.0,Cristal,2943.45,1500.5,área de ponderação
-Cristo Redentor,15144,ok,4314902051,Cristo Redentor,33,15144,4314902009,1,4314902009.0,"Cristo Redentor, Jardim Lindóia e São Sebastião",4168.11,3166.67,área de ponderação
-Espírito Santo,4953,ok,4314902030,Espírito Santo,10,4953,4314902038,1,4314902038.0,"Ipanema, Espírito Santo e Guarujá",3787.52,2803.0,área de ponderação
-Extrema,2360,ok,4314902085,Extrema,14,2360,4314902031,1,4314902031.0,Extremo Sul,1608.61,1100.0,área de ponderação
-Farrapos,17591,ok,4314902067,Farrapos,33,17591,4314902006,1,4314902006.0,Arquipélago e Farrapos,1318.86,925.0,área de ponderação
-Farroupilha,774,ok,4314902005,Farroupilha,2,774,4314902001,1,4314902001.0,"Floresta, Independência, Bom Fim e Farroupilha",4903.91,3750.0,área de ponderação
-Floresta,8798,ok,4314902040,Floresta,23,8798,4314902001,1,4314902001.0,"Floresta, Independência, Bom Fim e Farroupilha",4903.91,3750.0,área de ponderação
-Glória,15248,ok,4314902012,Glória,33,15248,4314902028,1,4314902028.0,"Belém Velho, Cascata e Glória",1730.42,1162.25,área de ponderação
-Guarujá,6145,ok,4314902031,Guarujá,11,6145,4314902038,1,4314902038.0,"Ipanema, Espírito Santo e Guarujá",3787.52,2803.0,área de ponderação
-Higienópolis,10284,ok,4314902049,Higienópolis,18,10284,4314902035,1,4314902035.0,"Higienópolis, Boa Vista e Jardim Europa",7411.42,5300.0,área de ponderação
-Hípica,28643,ok,4314902072,Hípica,41,28643,4314902027,1,4314902027.0,"Serraria, Aberta dos Morros e Hípica",2283.75,1600.0,área de ponderação
-Humaitá,12744,ok,4314902066,Humaitá,26,12744,4314902007,1,4314902007.0,"São Geraldo, Navegantes, Humaitá e Anchieta",2770.43,1930.0,área de ponderação
-Independência,6885,ok,4314902039,Independência,22,6885,4314902001,1,4314902001.0,"Floresta, Independência, Bom Fim e Farroupilha",4903.91,3750.0,área de ponderação
-Ipanema,13403,ok,4314902029,Ipanema,24,13403,4314902038,1,4314902038.0,"Ipanema, Espírito Santo e Guarujá",3787.52,2803.0,área de ponderação
-Jardim Botânico,11349,ok,4314902018,Jardim Botânico,25,11349,4314902042,1,4314902042.0,Petrópolis e Jardim Botânico,6119.11,4500.0,área de ponderação
-Jardim Carvalho,23405,ok,4314902068,Jardim Carvalho,46,23405,4314902015,1,4314902015.0,Jardim Carvalho e Jardim do Salso,3214.22,2000.0,área de ponderação
-Jardim Europa,4372,ok,4314902086,Jardim Europa,7,4372,4314902035,1,4314902035.0,"Higienópolis, Boa Vista e Jardim Europa",7411.42,5300.0,área de ponderação
-Jardim Leopoldina,16151,ok,4314902089,Jardim Leopoldina,36,16151,4314902011,1,4314902011.0,"Costa e Silva, Parque Santa Fé e Jardim Leopoldina",1942.05,1400.0,área de ponderação
-Jardim Floresta,2228,ok,4314902087,Jardim Floresta,5,2228,4314902008,1,4314902008.0,"São João, Santa Maria Goretti, São Pedro e Jardim Floresta",4125.18,3000.0,área de ponderação
-Jardim Isabel,2592,ok,4314902079,Jardim Isabel,4,2592,4314902046,1,4314902046.0,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
-Jardim Itu,17565,ok,4314902088,Jardim Itu,32,17565,4314902021,1,4314902021.0,Jardim Itú e Passo das Pedras,2799.49,1812.0,área de ponderação
-Jardim Sabará,11270,ok,4314902090,Jardim Sabará,24,11270,4314902016,1,4314902016.0,Jardim Sabará e Morro Santana,2622.56,1800.0,área de ponderação
-Jardim Lindóia,7587,ok,4314902054,Jardim Lindóia,15,7587,4314902009,1,4314902009.0,"Cristo Redentor, Jardim Lindóia e São Sebastião",4168.11,3166.67,área de ponderação
-Jardim do Salso,6576,ok,4314902069,Jardim do Salso,13,6576,4314902015,1,4314902015.0,Jardim Carvalho e Jardim do Salso,3214.22,2000.0,área de ponderação
-Jardim São Pedro,3320,ok,4314902052,Jardim São Pedro,7,3320,4314902008,1,4314902008.0,"São João, Santa Maria Goretti, São Pedro e Jardim Floresta",4125.18,3000.0,área de ponderação
-Lageado,5676,ok,4314902076,Lageado,9,5676,4314902031,1,4314902031.0,Extremo Sul,1608.61,1100.0,área de ponderação
-Lami,6677,ok,4314902074,Lami,13,6677,4314902031,1,4314902031.0,Extremo Sul,1608.61,1100.0,área de ponderação
+Aberta dos Morros,9854,ok,4314902080,Aberta dos Morros,12,9854,4314902027,1,4314902027,"Serraria, Aberta dos Morros e Hípica",2283.75,1600.0,área de ponderação
+Agronomia,2677,ok,4314902035,Agronomia,8,2677,4314902039,1,4314902039,Agronomia e Lomba Norte,1699.82,975.0,área de ponderação
+Anchieta,791,ok,4314902055,Anchieta,6,791,4314902007,1,4314902007,"São Geraldo, Navegantes, Humaitá e Anchieta",2770.43,1930.0,área de ponderação
+Arquipélago,6411,ok,4314902033,Arquipélago,28,6411,4314902006,1,4314902006,Arquipélago e Farrapos,1318.86,925.0,área de ponderação
+Auxiliadora,8909,ok,4314902045,Auxiliadora,21,8909,4314902032,1,4314902032,Moinhos de Vento e Auxiliadora,10110.21,5500.0,área de ponderação
+Azenha,12064,ok,4314902008,Azenha,33,12064,4314902002,1,4314902002,Cidade Baixa e Azenha,4439.59,3333.33,área de ponderação
+Bela Vista,11819,ok,4314902043,Bela Vista,22,11819,4314902005,1,4314902005,Mont Serrat e Bela Vista,10133.89,7250.0,área de ponderação
+Belém Novo,9851,ok,4314902073,Belém Novo,20,9851,4314902031,1,4314902031,Extremo Sul,1608.61,1100.0,área de ponderação
+Belém Velho,10893,ok,4314902037,Belém Velho,17,10893,4314902028,1,4314902028,"Belém Velho, Cascata e Glória",1730.42,1162.25,área de ponderação
+Boa Vista,9254,ok,4314902056,Boa Vista,20,9254,4314902035,1,4314902035,"Higienópolis, Boa Vista e Jardim Europa",7411.42,5300.0,área de ponderação
+Boa Vista do Sul,2703,ok,4314902081,Boa Vista do Sul,6,2703,4314902031,1,4314902031,Extremo Sul,1608.61,1100.0,área de ponderação
+Bom Jesus,24589,ok,4314902021,Bom Jesus,45,24589,4314902017,1,4314902017,Bom Jesus,1615.01,925.0,área de ponderação
+Bom Fim,10160,ok,4314902038,Bom Fim,26,10160,4314902001,1,4314902001,"Floresta, Independência, Bom Fim e Farroupilha",4903.91,3750.0,área de ponderação
+Camaquã,17935,ok,4314902023,Camaquã,33,17935,4314902025,1,4314902025,Camaquã e Cavalhada,2638.41,1650.0,área de ponderação
+Campo Novo,8743,ok,4314902082,Campo Novo,15,8743,4314902026,1,4314902026,Campo Novo e Vila Nova,2401.51,1550.0,área de ponderação
+Cascata,9234,ok,4314902034,Cascata,24,9234,4314902028,1,4314902028,"Belém Velho, Cascata e Glória",1730.42,1162.25,área de ponderação
+Cavalhada,25209,ok,4314902022,Cavalhada,52,25209,4314902025,1,4314902025,Camaquã e Cavalhada,2638.41,1650.0,área de ponderação
+Centro Histórico,30569,ok,4314902036,Centro Histórico,95,30569,4314902040,1,4314902040,Centro Histórico,4862.2,3660.0,área de ponderação
+Chácara das Pedras,5639,ok,4314902059,Chácara das Pedras,10,5639,4314902014,1,4314902014,"Três Figueiras, Chácara das Pedras e Vila Jardim",4344.6,2424.0,área de ponderação
+Chapéu do Sol,5547,ok,4314902083,Chapéu do Sol,10,5547,4314902031,1,4314902031,Extremo Sul,1608.61,1100.0,área de ponderação
+Cidade Baixa,13014,ok,4314902003,Cidade Baixa,39,13014,4314902002,1,4314902002,Cidade Baixa e Azenha,4439.59,3333.33,área de ponderação
+Coronel Aparício Borges,18966,ok,4314902013,Coronel Aparício Borges,32,18966,4314902019,1,4314902019,Coronel Aparício Borges e Vila João Pessoa,1661.16,1064.8,área de ponderação
+Costa e Silva,13585,ok,4314902084,Costa e Silva,25,13585,4314902011,1,4314902011,"Costa e Silva, Parque Santa Fé e Jardim Leopoldina",1942.05,1400.0,área de ponderação
+Cristal,24851,ok,4314902024,Cristal,60,24851,4314902023,1,4314902023,Cristal,2943.45,1500.5,área de ponderação
+Cristo Redentor,15144,ok,4314902051,Cristo Redentor,33,15144,4314902009,1,4314902009,"Cristo Redentor, Jardim Lindóia e São Sebastião",4168.11,3166.67,área de ponderação
+Espírito Santo,4953,ok,4314902030,Espírito Santo,10,4953,4314902038,1,4314902038,"Ipanema, Espírito Santo e Guarujá",3787.52,2803.0,área de ponderação
+Extrema,2360,ok,4314902085,Extrema,14,2360,4314902031,1,4314902031,Extremo Sul,1608.61,1100.0,área de ponderação
+Farrapos,17591,ok,4314902067,Farrapos,33,17591,4314902006,1,4314902006,Arquipélago e Farrapos,1318.86,925.0,área de ponderação
+Farroupilha,774,ok,4314902005,Farroupilha,2,774,4314902001,1,4314902001,"Floresta, Independência, Bom Fim e Farroupilha",4903.91,3750.0,área de ponderação
+Floresta,8798,ok,4314902040,Floresta,23,8798,4314902001,1,4314902001,"Floresta, Independência, Bom Fim e Farroupilha",4903.91,3750.0,área de ponderação
+Glória,15248,ok,4314902012,Glória,33,15248,4314902028,1,4314902028,"Belém Velho, Cascata e Glória",1730.42,1162.25,área de ponderação
+Guarujá,6145,ok,4314902031,Guarujá,11,6145,4314902038,1,4314902038,"Ipanema, Espírito Santo e Guarujá",3787.52,2803.0,área de ponderação
+Higienópolis,10284,ok,4314902049,Higienópolis,18,10284,4314902035,1,4314902035,"Higienópolis, Boa Vista e Jardim Europa",7411.42,5300.0,área de ponderação
+Hípica,28643,ok,4314902072,Hípica,41,28643,4314902027,1,4314902027,"Serraria, Aberta dos Morros e Hípica",2283.75,1600.0,área de ponderação
+Humaitá,12744,ok,4314902066,Humaitá,26,12744,4314902007,1,4314902007,"São Geraldo, Navegantes, Humaitá e Anchieta",2770.43,1930.0,área de ponderação
+Independência,6885,ok,4314902039,Independência,22,6885,4314902001,1,4314902001,"Floresta, Independência, Bom Fim e Farroupilha",4903.91,3750.0,área de ponderação
+Ipanema,13403,ok,4314902029,Ipanema,24,13403,4314902038,1,4314902038,"Ipanema, Espírito Santo e Guarujá",3787.52,2803.0,área de ponderação
+Jardim Botânico,11349,ok,4314902018,Jardim Botânico,25,11349,4314902042,1,4314902042,Petrópolis e Jardim Botânico,6119.11,4500.0,área de ponderação
+Jardim Carvalho,23405,ok,4314902068,Jardim Carvalho,46,23405,4314902015,1,4314902015,Jardim Carvalho e Jardim do Salso,3214.22,2000.0,área de ponderação
+Jardim Europa,4372,ok,4314902086,Jardim Europa,7,4372,4314902035,1,4314902035,"Higienópolis, Boa Vista e Jardim Europa",7411.42,5300.0,área de ponderação
+Jardim Leopoldina,16151,ok,4314902089,Jardim Leopoldina,36,16151,4314902011,1,4314902011,"Costa e Silva, Parque Santa Fé e Jardim Leopoldina",1942.05,1400.0,área de ponderação
+Jardim Floresta,2228,ok,4314902087,Jardim Floresta,5,2228,4314902008,1,4314902008,"São João, Santa Maria Goretti, São Pedro e Jardim Floresta",4125.18,3000.0,área de ponderação
+Jardim Isabel,2592,ok,4314902079,Jardim Isabel,4,2592,4314902046,1,4314902046,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
+Jardim Itu,17565,ok,4314902088,Jardim Itu,32,17565,4314902021,1,4314902021,Jardim Itú e Passo das Pedras,2799.49,1812.0,área de ponderação
+Jardim Sabará,11270,ok,4314902090,Jardim Sabará,24,11270,4314902016,1,4314902016,Jardim Sabará e Morro Santana,2622.56,1800.0,área de ponderação
+Jardim Lindóia,7587,ok,4314902054,Jardim Lindóia,15,7587,4314902009,1,4314902009,"Cristo Redentor, Jardim Lindóia e São Sebastião",4168.11,3166.67,área de ponderação
+Jardim do Salso,6576,ok,4314902069,Jardim do Salso,13,6576,4314902015,1,4314902015,Jardim Carvalho e Jardim do Salso,3214.22,2000.0,área de ponderação
+Jardim São Pedro,3320,ok,4314902052,Jardim São Pedro,7,3320,4314902008,1,4314902008,"São João, Santa Maria Goretti, São Pedro e Jardim Floresta",4125.18,3000.0,área de ponderação
+Lageado,5676,ok,4314902076,Lageado,9,5676,4314902031,1,4314902031,Extremo Sul,1608.61,1100.0,área de ponderação
+Lami,6677,ok,4314902074,Lami,13,6677,4314902031,1,4314902031,Extremo Sul,1608.61,1100.0,área de ponderação
 Lomba do Pinheiro,59200,ok_media_ponderada,4314902077,Lomba do Pinheiro,86,59200,4314902039; 4314902047,2,,,1459.201533108108,971.0232692567567,média ponderada pela população dos setores em cada área
-Mário Quintana,44068,ok,4314902078,Mário Quintana,78,44068,4314902020,1,4314902020.0,Mário Quintana,1301.37,900.0,área de ponderação
-Medianeira,8749,ok,4314902001,Medianeira,18,8749,4314902022,1,4314902022.0,Medianeira e Santa Tereza,2227.89,1212.0,área de ponderação
-Menino Deus,27961,ok,4314902004,Menino-Deus,67,27961,4314902041,1,4314902041.0,Menino Deus e Praia de Belas,5946.53,4500.0,área de ponderação
-Moinhos de Vento,9995,ok,4314902041,Moinhos de Vento,26,9995,4314902032,1,4314902032.0,Moinhos de Vento e Auxiliadora,10110.21,5500.0,área de ponderação
-Mont'Serrat,10357,ok,4314902044,MontSerrat,20,10357,4314902005,1,4314902005.0,Mont Serrat e Bela Vista,10133.89,7250.0,área de ponderação
-Morro Santana,21640,ok,4314902091,Morro Santana,39,21640,4314902016,1,4314902016.0,Jardim Sabará e Morro Santana,2622.56,1800.0,área de ponderação
-Navegantes,3315,ok,4314902048,Navegantes,14,3315,4314902007,1,4314902007.0,"São Geraldo, Navegantes, Humaitá e Anchieta",2770.43,1930.0,área de ponderação
-Nonoai,20776,ok,4314902010,Nonoai,49,20776,4314902024,1,4314902024.0,Nonoai e Teresópolis,3069.39,2000.0,área de ponderação
-Parque Santa Fé,6673,ok,4314902092,Parque Santa Fé,12,6673,4314902011,1,4314902011.0,"Costa e Silva, Parque Santa Fé e Jardim Leopoldina",1942.05,1400.0,área de ponderação
+Mário Quintana,44068,ok,4314902078,Mário Quintana,78,44068,4314902020,1,4314902020,Mário Quintana,1301.37,900.0,área de ponderação
+Medianeira,8749,ok,4314902001,Medianeira,18,8749,4314902022,1,4314902022,Medianeira e Santa Tereza,2227.89,1212.0,área de ponderação
+Menino Deus,27961,ok,4314902004,Menino-Deus,67,27961,4314902041,1,4314902041,Menino Deus e Praia de Belas,5946.53,4500.0,área de ponderação
+Moinhos de Vento,9995,ok,4314902041,Moinhos de Vento,26,9995,4314902032,1,4314902032,Moinhos de Vento e Auxiliadora,10110.21,5500.0,área de ponderação
+Mont'Serrat,10357,ok,4314902044,MontSerrat,20,10357,4314902005,1,4314902005,Mont Serrat e Bela Vista,10133.89,7250.0,área de ponderação
+Morro Santana,21640,ok,4314902091,Morro Santana,39,21640,4314902016,1,4314902016,Jardim Sabará e Morro Santana,2622.56,1800.0,área de ponderação
+Navegantes,3315,ok,4314902048,Navegantes,14,3315,4314902007,1,4314902007,"São Geraldo, Navegantes, Humaitá e Anchieta",2770.43,1930.0,área de ponderação
+Nonoai,20776,ok,4314902010,Nonoai,49,20776,4314902024,1,4314902024,Nonoai e Teresópolis,3069.39,2000.0,área de ponderação
+Parque Santa Fé,6673,ok,4314902092,Parque Santa Fé,12,6673,4314902011,1,4314902011,"Costa e Silva, Parque Santa Fé e Jardim Leopoldina",1942.05,1400.0,área de ponderação
 Partenon,43587,ok_media_ponderada,4314902015,Partenon,98,43587,4314902037; 4314902045,2,,,2563.697355404134,1678.5046458806523,média ponderada pela população dos setores em cada área
-Passo D'Areia,22530,ok,4314902050,Passo da Areia,44,22530,4314902043,1,4314902043.0,Passo da Areia,4408.8,3000.0,área de ponderação
-Passo das Pedras,14435,ok,4314902093,Passo das Pedras,26,14435,4314902021,1,4314902021.0,Jardim Itú e Passo das Pedras,2799.49,1812.0,área de ponderação
-Pedra Redonda,570,ok,4314902028,Pedra Redonda,2,570,4314902046,1,4314902046.0,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
+Passo D'Areia,22530,ok,4314902050,Passo da Areia,44,22530,4314902043,1,4314902043,Passo da Areia,4408.8,3000.0,área de ponderação
+Passo das Pedras,14435,ok,4314902093,Passo das Pedras,26,14435,4314902021,1,4314902021,Jardim Itú e Passo das Pedras,2799.49,1812.0,área de ponderação
+Pedra Redonda,570,ok,4314902028,Pedra Redonda,2,570,4314902046,1,4314902046,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
 Petrópolis,37613,ok_media_ponderada,4314902019,Petrópolis,75,37613,4314902034; 4314902042,2,,,6840.861010554861,5132.869503097334,média ponderada pela população dos setores em cada área
-Pitinga,7012,ok,4314902094,Pitinga,12,7012,4314902029,1,4314902029.0,Restinga Velha e Pitinga,1025.84,882.4,área de ponderação
-Ponta Grossa,8939,ok,4314902071,Ponta Grossa,13,8939,4314902031,1,4314902031.0,Extremo Sul,1608.61,1100.0,área de ponderação
-Praia de Belas,1522,ok,4314902002,Praia de Belas,7,1522,4314902041,1,4314902041.0,Menino Deus e Praia de Belas,5946.53,4500.0,área de ponderação
+Pitinga,7012,ok,4314902094,Pitinga,12,7012,4314902029,1,4314902029,Restinga Velha e Pitinga,1025.84,882.4,área de ponderação
+Ponta Grossa,8939,ok,4314902071,Ponta Grossa,13,8939,4314902031,1,4314902031,Extremo Sul,1608.61,1100.0,área de ponderação
+Praia de Belas,1522,ok,4314902002,Praia de Belas,7,1522,4314902041,1,4314902041,Menino Deus e Praia de Belas,5946.53,4500.0,área de ponderação
 Restinga,62448,ok_media_ponderada,4314902070,Restinga,92,62448,4314902029; 4314902030,2,,,1169.1686087624903,947.7263643351268,média ponderada pela população dos setores em cada área
-Rio Branco,15710,ok,4314902042,Rio Branco,39,15710,4314902004,1,4314902004.0,Rio Branco e Santa Cecília,7557.36,5333.33,área de ponderação
-Rubem Berta,27930,ok,4314902063,Rubem Berta,57,27930,4314902012,1,4314902012.0,Rubem Berta,1421.64,1116.67,área de ponderação
-Santa Cecília,4640,ok,4314902006,Santa Cecília,11,4640,4314902004,1,4314902004.0,Rio Branco e Santa Cecília,7557.36,5333.33,área de ponderação
-Santa Maria Goretti,3035,ok,4314902062,Santa Maria Goretti,8,3035,4314902008,1,4314902008.0,"São João, Santa Maria Goretti, São Pedro e Jardim Floresta",4125.18,3000.0,área de ponderação
-Santa Rosa de Lima,34627,ok,4314902095,Santa Rosa de Lima,59,34627,4314902044,1,4314902044.0,Santa Rosa de Lima,1255.03,1003.0,área de ponderação
-Santa Tereza,31358,ok,4314902009,Santa Tereza,64,31358,4314902022,1,4314902022.0,Medianeira e Santa Tereza,2227.89,1212.0,área de ponderação
-Santana,17794,ok,4314902007,Santana,45,17794,4314902003,1,4314902003.0,Santana,4518.78,3300.0,área de ponderação
-Santo Antônio,13105,ok,4314902014,Santo Antônio,32,13105,4314902045,1,4314902045.0,Santo Antônio e Partenon Oeste,2801.69,1950.0,área de ponderação
-São Caetano,733,ok,4314902096,São Caetano,3,733,4314902031,1,4314902031.0,Extremo Sul,1608.61,1100.0,área de ponderação
-São Geraldo,6948,ok,4314902047,São Geraldo,21,6948,4314902007,1,4314902007.0,"São Geraldo, Navegantes, Humaitá e Anchieta",2770.43,1930.0,área de ponderação
-São João,10621,ok,4314902046,São João,25,10621,4314902008,1,4314902008.0,"São João, Santa Maria Goretti, São Pedro e Jardim Floresta",4125.18,3000.0,área de ponderação
-Vila São José,24011,ok,4314902098,Vila São José,39,24011,4314902018,1,4314902018.0,Vila São José,1346.13,970.0,área de ponderação
-São Sebastião,7514,ok,4314902065,São Sebastião,16,7514,4314902009,1,4314902009.0,"Cristo Redentor, Jardim Lindóia e São Sebastião",4168.11,3166.67,área de ponderação
+Rio Branco,15710,ok,4314902042,Rio Branco,39,15710,4314902004,1,4314902004,Rio Branco e Santa Cecília,7557.36,5333.33,área de ponderação
+Rubem Berta,27930,ok,4314902063,Rubem Berta,57,27930,4314902012,1,4314902012,Rubem Berta,1421.64,1116.67,área de ponderação
+Santa Cecília,4640,ok,4314902006,Santa Cecília,11,4640,4314902004,1,4314902004,Rio Branco e Santa Cecília,7557.36,5333.33,área de ponderação
+Santa Maria Goretti,3035,ok,4314902062,Santa Maria Goretti,8,3035,4314902008,1,4314902008,"São João, Santa Maria Goretti, São Pedro e Jardim Floresta",4125.18,3000.0,área de ponderação
+Santa Rosa de Lima,34627,ok,4314902095,Santa Rosa de Lima,59,34627,4314902044,1,4314902044,Santa Rosa de Lima,1255.03,1003.0,área de ponderação
+Santa Tereza,31358,ok,4314902009,Santa Tereza,64,31358,4314902022,1,4314902022,Medianeira e Santa Tereza,2227.89,1212.0,área de ponderação
+Santana,17794,ok,4314902007,Santana,45,17794,4314902003,1,4314902003,Santana,4518.78,3300.0,área de ponderação
+Santo Antônio,13105,ok,4314902014,Santo Antônio,32,13105,4314902045,1,4314902045,Santo Antônio e Partenon Oeste,2801.69,1950.0,área de ponderação
+São Caetano,733,ok,4314902096,São Caetano,3,733,4314902031,1,4314902031,Extremo Sul,1608.61,1100.0,área de ponderação
+São Geraldo,6948,ok,4314902047,São Geraldo,21,6948,4314902007,1,4314902007,"São Geraldo, Navegantes, Humaitá e Anchieta",2770.43,1930.0,área de ponderação
+São João,10621,ok,4314902046,São João,25,10621,4314902008,1,4314902008,"São João, Santa Maria Goretti, São Pedro e Jardim Floresta",4125.18,3000.0,área de ponderação
+Vila São José,24011,ok,4314902098,Vila São José,39,24011,4314902018,1,4314902018,Vila São José,1346.13,970.0,área de ponderação
+São Sebastião,7514,ok,4314902065,São Sebastião,16,7514,4314902009,1,4314902009,"Cristo Redentor, Jardim Lindóia e São Sebastião",4168.11,3166.67,área de ponderação
 Sarandi,51539,ok_media_ponderada,4314902061,Sarandi,117,51539,4314902013; 4314902036,2,,,2144.1268922563495,1617.4110867498398,média ponderada pela população dos setores em cada área
-Serraria,4385,ok,4314902075,Serraria,10,4385,4314902027,1,4314902027.0,"Serraria, Aberta dos Morros e Hípica",2283.75,1600.0,área de ponderação
-Sétimo Céu,1166,ok,4314902097,Sétimo Céu,4,1166,4314902046,1,4314902046.0,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
-Teresópolis,13072,ok,4314902011,Teresópolis,28,13072,4314902024,1,4314902024.0,Nonoai e Teresópolis,3069.39,2000.0,área de ponderação
-Três Figueiras,4016,ok,4314902058,Três Figueiras,9,4016,4314902014,1,4314902014.0,"Três Figueiras, Chácara das Pedras e Vila Jardim",4344.6,2424.0,área de ponderação
-Tristeza,17201,ok,4314902026,Tristeza,30,17201,4314902046,1,4314902046.0,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
-Vila Assunção,3974,ok,4314902025,Vila Assunção,8,3974,4314902046,1,4314902046.0,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
-Vila Conceição,969,ok,4314902027,Vila Conceição,3,969,4314902046,1,4314902046.0,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
-Vila Ipiranga,18041,ok,4314902057,Vila Ipiranga,44,18041,4314902010,1,4314902010.0,Vila Ipiranga,4294.0,2625.0,área de ponderação
-Vila Jardim,11411,ok,4314902060,Vila Jardim,28,11411,4314902014,1,4314902014.0,"Três Figueiras, Chácara das Pedras e Vila Jardim",4344.6,2424.0,área de ponderação
-Vila João Pessoa,10431,ok,4314902016,Vila João Pessoa,22,10431,4314902019,1,4314902019.0,Coronel Aparício Borges e Vila João Pessoa,1661.16,1064.8,área de ponderação
-Vila Nova,32217,ok,4314902032,Vila Nova,59,32217,4314902026,1,4314902026.0,Campo Novo e Vila Nova,2401.51,1550.0,área de ponderação
+Serraria,4385,ok,4314902075,Serraria,10,4385,4314902027,1,4314902027,"Serraria, Aberta dos Morros e Hípica",2283.75,1600.0,área de ponderação
+Sétimo Céu,1166,ok,4314902097,Sétimo Céu,4,1166,4314902046,1,4314902046,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
+Teresópolis,13072,ok,4314902011,Teresópolis,28,13072,4314902024,1,4314902024,Nonoai e Teresópolis,3069.39,2000.0,área de ponderação
+Três Figueiras,4016,ok,4314902058,Três Figueiras,9,4016,4314902014,1,4314902014,"Três Figueiras, Chácara das Pedras e Vila Jardim",4344.6,2424.0,área de ponderação
+Tristeza,17201,ok,4314902026,Tristeza,30,17201,4314902046,1,4314902046,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
+Vila Assunção,3974,ok,4314902025,Vila Assunção,8,3974,4314902046,1,4314902046,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
+Vila Conceição,969,ok,4314902027,Vila Conceição,3,969,4314902046,1,4314902046,"Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel",6645.55,4702.0,área de ponderação
+Vila Ipiranga,18041,ok,4314902057,Vila Ipiranga,44,18041,4314902010,1,4314902010,Vila Ipiranga,4294.0,2625.0,área de ponderação
+Vila Jardim,11411,ok,4314902060,Vila Jardim,28,11411,4314902014,1,4314902014,"Três Figueiras, Chácara das Pedras e Vila Jardim",4344.6,2424.0,área de ponderação
+Vila João Pessoa,10431,ok,4314902016,Vila João Pessoa,22,10431,4314902019,1,4314902019,Coronel Aparício Borges e Vila João Pessoa,1661.16,1064.8,área de ponderação
+Vila Nova,32217,ok,4314902032,Vila Nova,59,32217,4314902026,1,4314902026,Campo Novo e Vila Nova,2401.51,1550.0,área de ponderação

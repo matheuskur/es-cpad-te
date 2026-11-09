@@ -1,24 +1,26 @@
 """Limpeza dos dados do IBGE (Censo 2022) para Porto Alegre.
 
-Fontes (dados/originais/IBGE/):
-- Tab8_3.xlsx: renda por área de ponderação (versionado).
-- composicao_areas_ponderacao_IBGE.xlsx: setor -> área de ponderação (versionado).
-- Agregados por setor censitário (básico, BR): baixado do FTP do IBGE se não existir
-  localmente, extraído em dados/originais/IBGE/agregados/ (fora do git).
+O script liga cada um dos 94 bairros do INCT a um bairro do IBGE e calcula a renda
+de cada bairro a partir das áreas de ponderação (Tabela 8.3).
 
-Saídas (dados/processados/IBGE/):
-- areas_ponderacao_poa.csv: Tabela 8.3 filtrada para Porto Alegre.
-- setores_areas_poa.csv: setor -> área de ponderação, Porto Alegre.
-- setores_bairros_poa.csv: setor -> bairro e população (v0001), Porto Alegre.
-- bairros_poa.csv: os 94 bairros do INCT ligados ao IBGE, com população e renda.
-- bairros_renda_ponderada_detalhe.csv: pesos por área dos bairros em mais de uma área.
+Arquivos usados (pasta dados/originais/IBGE/):
+- Tab8_3.xlsx: renda por área de ponderação.
+- composicao_areas_ponderacao_IBGE.xlsx: a qual área pertence cada setor.
+- agregados por setor (ZIP do IBGE): a qual bairro pertence cada setor.
+  Se o ZIP não existir, o script baixa do site do IBGE.
 
-Uso (a partir da raiz do projeto):
+Arquivos gerados (pasta dados/processados/IBGE/):
+- areas_ponderacao_poa.csv: Tabela 8.3 só com Porto Alegre.
+- setores_areas_poa.csv: setor e área de ponderação.
+- setores_bairros_poa.csv: setor, bairro e população.
+- bairros_poa.csv: os 94 bairros do INCT, com população e renda.
+- bairros_renda_ponderada_detalhe.csv: pesos das áreas dos bairros que estão em duas áreas.
+
+Como executar (a partir da pasta do projeto):
     python scripts/limpeza_ibge.py
 """
 
 import json
-import re
 import unicodedata
 import zipfile
 from pathlib import Path
@@ -26,234 +28,271 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-RAIZ = Path(__file__).resolve().parent.parent
-ORIGINAIS = RAIZ / "dados" / "originais" / "IBGE"
-PASTA_AGREGADOS = ORIGINAIS / "agregados"
+
+# ---------------------------------------------------------------------------
+# Onde estão os arquivos
+# ---------------------------------------------------------------------------
+PASTA_PROJETO = Path(__file__).resolve().parent.parent
+PASTA_IBGE = PASTA_PROJETO / "dados" / "originais" / "IBGE"
+PASTA_AGREGADOS = PASTA_IBGE / "agregados"
 ZIP_AGREGADOS = PASTA_AGREGADOS / "Agregados_por_setores_basico_BR_20260520.zip"
-MEMBRO_AGREGADOS = "Agregados_por_setores_basico_BR.csv"
+CSV_AGREGADOS = PASTA_AGREGADOS / "Agregados_por_setores_basico_BR.csv"
 URL_AGREGADOS = (
     "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/"
     "Agregados_por_Setor_csv/Agregados_por_setores_basico_BR_20260520.zip"
 )
-INCT_JSON = RAIZ / "dados" / "originais" / "INCT" / "data_inct_original.json"
-SAIDA = RAIZ / "dados" / "processados" / "IBGE"
+ARQUIVO_TABELA_83 = PASTA_IBGE / "Tab8_3.xlsx"
+ARQUIVO_COMPOSICAO = PASTA_IBGE / "composicao_areas_ponderacao_IBGE.xlsx"
+ARQUIVO_INCT = PASTA_PROJETO / "dados" / "originais" / "INCT" / "data_inct_original.json"
+PASTA_SAIDA = PASTA_PROJETO / "dados" / "processados" / "IBGE"
 
-TAB83 = ORIGINAIS / "Tab8_3.xlsx"
-COMPOSICAO = ORIGINAIS / "composicao_areas_ponderacao_IBGE.xlsx"
+CODIGO_PORTO_ALEGRE = "4314902"
+LINHAS_DE_CABECALHO_DA_TABELA = 4  # duas de título e duas de cabeçalho
 
-COD_PORTO_ALEGRE = 4314902
-LINHAS_CABECALHO = 4  # duas de título e duas de cabeçalho
-
-# Nome do bairro no INCT -> nome do mesmo bairro no IBGE, quando a grafia difere
-ALIAS = {
-    "Mont'Serrat": "Mont'Serrat",
+# Alguns bairros têm grafia diferente no INCT e no IBGE: nome no INCT -> nome no IBGE
+NOMES_DIFERENTES = {
     "Passo D'Areia": "Passo da Areia",
     "Menino Deus": "Menino-Deus",
 }
 
-
-def normalizar(texto):
-    """Minúsculas, sem acentos, sem pontuação (apóstrofo e hífen viram nada)."""
-    sem_acento = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode().lower()
-    limpo = re.sub(r"[^a-z0-9 ]", "", sem_acento.replace("-", " "))
-    return " ".join(limpo.split())
-
-
-def carregar_inct():
-    """Devolve {bairro: população} para os 94 bairros do INCT."""
-    with open(INCT_JSON, encoding="utf-8") as f:
-        raw = json.load(f)
-    primeiro = raw[next(iter(raw))]
-    return {bairro: valores["population"] for bairro, valores in primeiro.items()}
+# Colunas do arquivo bairros_poa.csv, nessa ordem
+COLUNAS_DOS_BAIRROS = [
+    "bairro_inct", "populacao_inct", "status", "cd_bairro_ibge", "nome_bairro_ibge",
+    "setores", "populacao_ibge", "areas", "n_areas", "codigo_area", "nome_area",
+    "renda_media_total", "renda_mediana_total", "metodo_renda",
+]
 
 
-# ---------------------------------------------------------------- Tabela 8.3 e composição
+# ---------------------------------------------------------------------------
+# Funções auxiliares
+# ---------------------------------------------------------------------------
 
-def ler_tab83():
-    colunas = [
+def nome_para_comparar(nome):
+    """Deixa o nome de um bairro pronto para comparação.
+
+    Tira acentos, passa para minúsculas e troca hífen e apóstrofo por espaço ou nada.
+    Ex.: 'Menino-Deus' e 'menino deus' viram o mesmo texto.
+    """
+    texto = unicodedata.normalize("NFKD", nome).encode("ascii", "ignore").decode("ascii")
+    texto = texto.lower().replace("-", " ").replace("'", "")
+    return " ".join(texto.split())
+
+
+# ---------------------------------------------------------------------------
+# Leitura dos arquivos
+# ---------------------------------------------------------------------------
+
+def baixar_agregados():
+    """Baixa o ZIP de agregados do IBGE, se ele ainda não estiver no computador."""
+    if ZIP_AGREGADOS.exists():
+        return
+    PASTA_AGREGADOS.mkdir(parents=True, exist_ok=True)
+    print("Baixando o ZIP de agregados do IBGE (cerca de 15 MB)...")
+    resposta = requests.get(URL_AGREGADOS, timeout=300)
+    resposta.raise_for_status()
+    ZIP_AGREGADOS.write_bytes(resposta.content)
+
+
+def extrair_agregados():
+    """Extrai o CSV de dentro do ZIP, se ele ainda não estiver extraído."""
+    if not CSV_AGREGADOS.exists():
+        with zipfile.ZipFile(ZIP_AGREGADOS) as arquivo_zip:
+            arquivo_zip.extract(CSV_AGREGADOS.name, PASTA_AGREGADOS)
+
+
+def ler_inct():
+    """Devolve um dicionário: nome do bairro -> população (INCT)."""
+    with open(ARQUIVO_INCT, encoding="utf-8") as arquivo:
+        dados = json.load(arquivo)
+    primeiro_nivel = dados["3_0m"]
+    return {bairro: valores["population"] for bairro, valores in primeiro_nivel.items()}
+
+
+def ler_tabela_83():
+    """Lê a Tabela 8.3 e devolve só as áreas de Porto Alegre."""
+    nomes_das_colunas = [
         "codigo_municipio", "nome_municipio", "codigo_area", "nome_area",
         "pessoas_total", "pessoas_homens", "pessoas_mulheres",
         "renda_media_total", "renda_media_homens", "renda_media_mulheres",
         "renda_mediana_total", "renda_mediana_homens", "renda_mediana_mulheres",
     ]
-    df = pd.read_excel(TAB83, header=None, skiprows=LINHAS_CABECALHO, names=colunas, dtype=object)
-    df = df.dropna(subset=["codigo_area"])
-    df = df[df["codigo_municipio"] == COD_PORTO_ALEGRE].copy()
-    df["codigo_area"] = df["codigo_area"].astype("int64")
-    for c in colunas[4:]:
-        df[c] = pd.to_numeric(df[c])
-    return df.reset_index(drop=True)
+    tabela = pd.read_excel(
+        ARQUIVO_TABELA_83, header=None, skiprows=LINHAS_DE_CABECALHO_DA_TABELA,
+        names=nomes_das_colunas, dtype=object,
+    )
+    tabela = tabela.dropna(subset=["codigo_area"])
+    tabela = tabela[tabela["codigo_municipio"] == int(CODIGO_PORTO_ALEGRE)].copy()
+
+    tabela["codigo_area"] = tabela["codigo_area"].astype("int64")
+    for coluna in nomes_das_colunas[4:]:
+        tabela[coluna] = pd.to_numeric(tabela[coluna])
+    return tabela.reset_index(drop=True)
 
 
-def ler_composicao(areas_validas):
-    df = pd.read_excel(COMPOSICAO, dtype=str)
-    df.columns = ["setor", "codigo_municipio", "codigo_area", "nome_municipio"]  # corrige "Municíipio"
-    df = df[df["codigo_municipio"].astype(int) == COD_PORTO_ALEGRE].copy()
-    df["codigo_area"] = df["codigo_area"].astype("int64")
-    fora = set(df["codigo_area"]) - set(areas_validas)
-    assert not fora, f"áreas de setores sem linha na Tabela 8.3: {fora}"
-    return df[["setor", "codigo_area"]].reset_index(drop=True)
+def ler_setores_e_areas():
+    """Lê a composição: qual área de ponderação tem cada setor de Porto Alegre."""
+    composicao = pd.read_excel(ARQUIVO_COMPOSICAO, dtype=str)
+    # A coluna do nome do município vem com erro de digitação na planilha; não é usada
+    composicao.columns = ["setor", "codigo_municipio", "codigo_area", "nome_municipio"]
+    composicao = composicao[composicao["codigo_municipio"] == CODIGO_PORTO_ALEGRE].copy()
+    composicao["codigo_area"] = composicao["codigo_area"].astype("int64")
+    return composicao[["setor", "codigo_area"]].reset_index(drop=True)
 
 
-# ---------------------------------------------------------------- agregados por setor
-
-def baixar_agregados():
-    """Baixa o ZIP do IBGE se ainda não existir localmente."""
-    PASTA_AGREGADOS.mkdir(parents=True, exist_ok=True)
-    if ZIP_AGREGADOS.exists() and zipfile.is_zipfile(ZIP_AGREGADOS):
-        return
-    print(f"Baixando {URL_AGREGADOS}")
-    tmp = ZIP_AGREGADOS.with_suffix(".part")
-    with requests.get(URL_AGREGADOS, stream=True, timeout=300) as r:
-        r.raise_for_status()
-        with open(tmp, "wb") as f:
-            for bloco in r.iter_content(chunk_size=1 << 20):
-                f.write(bloco)
-    if not zipfile.is_zipfile(tmp):
-        tmp.unlink()
-        raise RuntimeError("o arquivo baixado não é um ZIP válido")
-    tmp.replace(ZIP_AGREGADOS)
-
-
-def extrair_agregados():
-    """Extrai o CSV do ZIP, se ainda não estiver extraído."""
-    destino = PASTA_AGREGADOS / MEMBRO_AGREGADOS
-    if not destino.exists():
-        with zipfile.ZipFile(ZIP_AGREGADOS) as z:
-            z.extract(MEMBRO_AGREGADOS, PASTA_AGREGADOS)
-    return destino
-
-
-def ler_setores_poa(csv_path):
-    """Lê só as colunas necessárias e filtra Porto Alegre."""
-    df = pd.read_csv(
-        csv_path, sep=";", encoding="latin-1", dtype=str,
+def ler_setores_com_bairro():
+    """Lê o CSV de agregados e devolve os setores de Porto Alegre, com bairro e população."""
+    tabela = pd.read_csv(
+        CSV_AGREGADOS, sep=";", encoding="latin-1", dtype=str,
         usecols=["CD_SETOR", "CD_MUN", "CD_BAIRRO", "NM_BAIRRO", "v0001"],
     )
-    df = df[df["CD_MUN"] == str(COD_PORTO_ALEGRE)].copy()
-    df["populacao"] = pd.to_numeric(df["v0001"], errors="raise")
-    return df.rename(columns={
+    tabela = tabela[tabela["CD_MUN"] == CODIGO_PORTO_ALEGRE].copy()
+    tabela["populacao"] = pd.to_numeric(tabela["v0001"])
+
+    setores = tabela.rename(columns={
         "CD_SETOR": "setor", "CD_BAIRRO": "cd_bairro", "NM_BAIRRO": "nome_bairro",
-    })[["setor", "cd_bairro", "nome_bairro", "populacao"]].reset_index(drop=True)
+    })
+    return setores[["setor", "cd_bairro", "nome_bairro", "populacao"]].reset_index(drop=True)
 
 
-# ---------------------------------------------------------------- ligação bairro <-> área
+# ---------------------------------------------------------------------------
+# Renda dos bairros
+# ---------------------------------------------------------------------------
 
-def renda_ponderada(setores, setores_areas, areas, cd_bairro):
-    """Renda média e mediana de um bairro em duas ou mais áreas, ponderadas pela população
-    dos setores do bairro em cada área. A mediana ponderada é aproximada (média das medianas)."""
-    s = setores[setores["cd_bairro"] == cd_bairro].merge(setores_areas, on="setor")
-    det = s.groupby("codigo_area", as_index=False).agg(populacao=("populacao", "sum"))
-    det = det.merge(
-        areas[["codigo_area", "nome_area", "renda_media_total", "renda_mediana_total"]], on="codigo_area"
+def renda_de_duas_areas(setores, setores_areas, tabela_83, cd_bairro):
+    """Calcula a renda de um bairro que está em mais de uma área.
+
+    Cada área pesa de acordo com a população dos setores do bairro que estão nela.
+    Devolve: (renda média, renda mediana aproximada, tabela com os pesos).
+    """
+    setores_do_bairro = setores[setores["cd_bairro"] == cd_bairro]
+    juntos = setores_do_bairro.merge(setores_areas, on="setor")
+    populacao_por_area = juntos.groupby("codigo_area")["populacao"].sum()
+    total = populacao_por_area.sum()
+
+    renda_media = 0.0
+    renda_mediana = 0.0
+    detalhe = []
+    for codigo_area, populacao in populacao_por_area.items():
+        area = tabela_83[tabela_83["codigo_area"] == codigo_area].iloc[0]
+        peso = populacao / total
+        renda_media += peso * area["renda_media_total"]
+        renda_mediana += peso * area["renda_mediana_total"]
+        detalhe.append({
+            "codigo_area": codigo_area,
+            "populacao": populacao,
+            "nome_area": area["nome_area"],
+            "renda_media_total": area["renda_media_total"],
+            "renda_mediana_total": area["renda_mediana_total"],
+            "peso": peso,
+        })
+    return renda_media, renda_mediana, pd.DataFrame(detalhe)
+
+
+# ---------------------------------------------------------------------------
+# Ligação entre os bairros do INCT e os bairros do IBGE
+# ---------------------------------------------------------------------------
+
+def ligar_bairros(populacao_inct, setores, setores_areas, tabela_83):
+    """Cria uma linha para cada bairro do INCT, com a ligação ao IBGE e a renda."""
+    # Lista dos bairros do IBGE, com a população somada dos setores de cada um
+    bairros_ibge = setores.groupby(["cd_bairro", "nome_bairro"], as_index=False).agg(
+        setores=("setor", "count"), populacao_ibge=("populacao", "sum"),
     )
-    det["peso"] = det["populacao"] / det["populacao"].sum()
-    media = float((det["peso"] * det["renda_media_total"]).sum())
-    mediana = float((det["peso"] * det["renda_mediana_total"]).sum())
-    return media, mediana, det
+    bairros_ibge["nome_comparar"] = bairros_ibge["nome_bairro"].apply(nome_para_comparar)
 
-
-def ligar_bairros(setores, setores_areas, areas, populacao_inct):
-    detalhes = []
-    ibge = (
-        setores.groupby(["cd_bairro", "nome_bairro"], as_index=False)
-        .agg(setores=("setor", "count"), populacao_ibge=("populacao", "sum"))
-    )
-    ibge["chave"] = ibge["nome_bairro"].map(normalizar)
-
-    areas_do_bairro = (
-        setores.merge(setores_areas, on="setor")
-        .groupby("cd_bairro")["codigo_area"]
-        .apply(lambda s: sorted(set(s)))
-        .to_dict()
-    )
-    areas_indexadas = areas.set_index("codigo_area")
+    # Áreas de ponderação de cada bairro do IBGE, a partir dos seus setores
+    setores_com_area = setores.merge(setores_areas, on="setor")
 
     linhas = []
-    for bairro, pop_inct in populacao_inct.items():
-        chave = normalizar(ALIAS.get(bairro, bairro))
-        candidatos = ibge[ibge["chave"] == chave]
-        linha = {
-            "bairro_inct": bairro,
-            "populacao_inct": pop_inct,
-            "status": "sem_correspondencia",
-            "cd_bairro_ibge": None, "nome_bairro_ibge": None,
-            "setores": None, "populacao_ibge": None,
-            "areas": None, "n_areas": None,
-            "codigo_area": None, "nome_area": None,
-            "renda_media_total": None, "renda_mediana_total": None,
-            "metodo_renda": None,
-        }
-        if len(candidatos) == 1:
-            c = candidatos.iloc[0]
-            codigos = areas_do_bairro.get(c["cd_bairro"], [])
-            linha.update({
-                "status": "ok",
-                "cd_bairro_ibge": c["cd_bairro"],
-                "nome_bairro_ibge": c["nome_bairro"],
-                "setores": int(c["setores"]),
-                "populacao_ibge": int(c["populacao_ibge"]),
-                "areas": "; ".join(str(x) for x in codigos),
-                "n_areas": len(codigos),
-            })
-            if len(codigos) == 1:
-                a = areas_indexadas.loc[codigos[0]]
-                linha.update({
-                    "codigo_area": int(codigos[0]),
-                    "nome_area": a["nome_area"],
-                    "renda_media_total": a["renda_media_total"],
-                    "renda_mediana_total": a["renda_mediana_total"],
-                    "metodo_renda": "área de ponderação",
-                })
-            else:
-                media, mediana, det = renda_ponderada(setores, setores_areas, areas, c["cd_bairro"])
-                linha.update({
-                    "status": "ok_media_ponderada",
-                    "renda_media_total": media,
-                    "renda_mediana_total": mediana,
-                    "metodo_renda": "média ponderada pela população dos setores em cada área",
-                })
-                detalhes.append(det.assign(bairro_inct=bairro))
-        elif len(candidatos) > 1:
+    detalhes = []
+    for bairro_inct, populacao in populacao_inct.items():
+        nome_no_ibge = NOMES_DIFERENTES.get(bairro_inct, bairro_inct)
+        encontrados = bairros_ibge[bairros_ibge["nome_comparar"] == nome_para_comparar(nome_no_ibge)]
+
+        linha = {coluna: None for coluna in COLUNAS_DOS_BAIRROS}
+        linha["bairro_inct"] = bairro_inct
+        linha["populacao_inct"] = populacao
+        linha["status"] = "sem_correspondencia"
+
+        if len(encontrados) > 1:
             linha["status"] = "ambiguo"
+            linhas.append(linha)
+            continue
+        if len(encontrados) == 0:
+            linhas.append(linha)
+            continue
+
+        bairro = encontrados.iloc[0]
+        cd_bairro = bairro["cd_bairro"]
+        areas_do_bairro = sorted(
+            setores_com_area[setores_com_area["cd_bairro"] == cd_bairro]["codigo_area"].unique()
+        )
+
+        linha["status"] = "ok"
+        linha["cd_bairro_ibge"] = cd_bairro
+        linha["nome_bairro_ibge"] = bairro["nome_bairro"]
+        linha["setores"] = int(bairro["setores"])
+        linha["populacao_ibge"] = int(bairro["populacao_ibge"])
+        linha["areas"] = "; ".join(str(area) for area in areas_do_bairro)
+        linha["n_areas"] = len(areas_do_bairro)
+
+        if len(areas_do_bairro) == 1:
+            # Caso comum: o bairro está em uma só área, então recebe a renda dela
+            area = tabela_83[tabela_83["codigo_area"] == areas_do_bairro[0]].iloc[0]
+            linha["codigo_area"] = str(int(area["codigo_area"]))
+            linha["nome_area"] = area["nome_area"]
+            linha["renda_media_total"] = area["renda_media_total"]
+            linha["renda_mediana_total"] = area["renda_mediana_total"]
+            linha["metodo_renda"] = "área de ponderação"
+        else:
+            # Bairro em duas ou mais áreas: média das áreas, ponderada pela população
+            media, mediana, detalhe = renda_de_duas_areas(setores, setores_areas, tabela_83, cd_bairro)
+            linha["status"] = "ok_media_ponderada"
+            linha["renda_media_total"] = media
+            linha["renda_mediana_total"] = mediana
+            linha["metodo_renda"] = "média ponderada pela população dos setores em cada área"
+            detalhes.append(detalhe.assign(bairro_inct=bairro_inct))
+
         linhas.append(linha)
-    return pd.DataFrame(linhas), (pd.concat(detalhes, ignore_index=True) if detalhes else pd.DataFrame())
+
+    tabela_bairros = pd.DataFrame(linhas, columns=COLUNAS_DOS_BAIRROS)
+    if detalhes:
+        tabela_detalhe = pd.concat(detalhes, ignore_index=True)
+    else:
+        tabela_detalhe = pd.DataFrame()
+    return tabela_bairros, tabela_detalhe
 
 
-# ---------------------------------------------------------------- principal
+# ---------------------------------------------------------------------------
+# Programa principal
+# ---------------------------------------------------------------------------
 
 def main():
-    SAIDA.mkdir(parents=True, exist_ok=True)
-    populacao_inct = carregar_inct()
+    PASTA_SAIDA.mkdir(parents=True, exist_ok=True)
 
+    # 1) Dados do IBGE para Porto Alegre
     baixar_agregados()
-    csv_agregados = extrair_agregados()
-    setores = ler_setores_poa(csv_agregados)
+    extrair_agregados()
+    setores = ler_setores_com_bairro()
+    tabela_83 = ler_tabela_83()
+    setores_areas = ler_setores_e_areas()
 
-    areas = ler_tab83()
-    composicao = ler_composicao(areas["codigo_area"])
+    tabela_83.to_csv(PASTA_SAIDA / "areas_ponderacao_poa.csv", index=False, encoding="utf-8")
+    setores_areas.to_csv(PASTA_SAIDA / "setores_areas_poa.csv", index=False, encoding="utf-8")
+    setores.to_csv(PASTA_SAIDA / "setores_bairros_poa.csv", index=False, encoding="utf-8")
 
-    areas.to_csv(SAIDA / "areas_ponderacao_poa.csv", index=False, encoding="utf-8")
-    composicao.to_csv(SAIDA / "setores_areas_poa.csv", index=False, encoding="utf-8")
-    setores.to_csv(SAIDA / "setores_bairros_poa.csv", index=False, encoding="utf-8")
+    # 2) Ligação com os bairros do INCT
+    populacao_inct = ler_inct()
+    bairros, detalhe = ligar_bairros(populacao_inct, setores, setores_areas, tabela_83)
+    bairros.to_csv(PASTA_SAIDA / "bairros_poa.csv", index=False, encoding="utf-8")
+    detalhe.to_csv(PASTA_SAIDA / "bairros_renda_ponderada_detalhe.csv", index=False, encoding="utf-8")
 
-    ligacao, detalhe_renda = ligar_bairros(setores, composicao, areas, populacao_inct)
-    ligacao.to_csv(SAIDA / "bairros_poa.csv", index=False, encoding="utf-8")
-    detalhe_renda.to_csv(SAIDA / "bairros_renda_ponderada_detalhe.csv", index=False, encoding="utf-8")
-
-    antigo = SAIDA / "bairros_areas_poa.csv"  # ligação antiga, por nomes das áreas
-    if antigo.exists():
-        antigo.unlink()
-
-    print(f"Setores em Porto Alegre: {len(setores)} (composição: {len(composicao)})")
-    print(f"Bairros do IBGE em Porto Alegre: {setores['cd_bairro'].nunique()}")
-    print(f"População IBGE (setores): {int(setores['populacao'].sum())} | INCT (94 bairros): {sum(populacao_inct.values())}")
-    print("Status da ligação:")
-    print(ligacao["status"].value_counts().to_string())
-    for r in ligacao[ligacao["status"] != "ok"].itertuples():
-        print(f"  {r.bairro_inct}: {r.status}")
-    diferentes = ligacao[(ligacao["status"].str.startswith("ok")) & (ligacao["populacao_ibge"] != ligacao["populacao_inct"])]
-    print(f"Bairros com população diferente entre IBGE e INCT: {len(diferentes)}")
+    # 3) Resumo na tela
+    print(f"Setores de Porto Alegre: {len(setores)}")
+    print(f"Bairros do IBGE: {setores['cd_bairro'].nunique()}")
+    print(f"População dos setores: {int(setores['populacao'].sum())}")
+    print("Situação da ligação:")
+    print(bairros["status"].value_counts().to_string())
 
 
 if __name__ == "__main__":
