@@ -17,7 +17,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 | 3 | Composição das áreas de ponderação | `IBGE/composicao_areas_ponderacao_IBGE.xlsx` | setor censitário → área de ponderação | Ponte entre setores e áreas de renda |
 | 4 | Dicionário dos agregados por setor censitário | `IBGE/dicionario_agregados_setores_censitarios_20260520.xlsx` | variável | Documentação das variáveis do IBGE (ex.: `V0001`, total de pessoas) |
 | 5 | Lista de tabelas de resultados gerais da amostra | `IBGE/lista_tabelas_resultados_gerais_amostra_areas_ponderacao.pdf` | tabela | Catálogo que confirma o título e o tema da Tabela 8.3 |
-| 6 | Agregados básicos por setor censitário | ZIP não versionado (cerca de 15 MB) | setor censitário → bairro | Ponte entre setores e bairros de Porto Alegre |
+| 6 | Agregados básicos por setor censitário | ZIP baixado por `scripts/limpeza_ibge.py` (cerca de 15 MB, fora do git) | setor censitário → bairro | Ponte entre setores e bairros de Porto Alegre |
 
 ## 3. Detalhamento das bases
 
@@ -26,7 +26,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 - **Formato:** JSON aninhado, organizado como nível → bairro → métricas.
 - **Níveis:** 71 chaves, de `3_0m` a `10_0m`, com passo de 0,1 m. Cada nível é uma cota do Guaíba (conforme a nota do notebook de exploração).
 - **Bairros:** 94 por nível, todos com o mesmo conjunto de nomes em cada um dos 71 níveis.
-- **Registros:** 6.674 linhas após transformar o JSON em formato longo (`notebooks/exploracao_inct.ipynb`).
+- **Registros:** 6.674 linhas após transformar o JSON em formato longo (`notebooks/exploracao/exploracao_inct.ipynb`).
 - **Variáveis:**
   - `affected_buildings`: edificações afetadas;
   - `total_buildings`: total de edificações;
@@ -44,10 +44,10 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 - A população afetada cai no total de 264.338 (nível 9,6 m) para 252.080 (nível 9,7 m). Isso ocorre em 4 bairros (Espírito Santo, Centro Histórico, Lageado e Rubem Berta).
 - Não é possível dizer, só pelos dados, se isso é uma propriedade do modelo ou um erro de processamento.
 
-**Lacunas de documentação:**
+**Documentação da fonte:**
 
-- O link da fonte (`README.md`, "link a preencher") e a data de coleta ("a preencher") ainda não foram informados.
-- A origem de `population` e `total_buildings` não está descrita. Não se sabe se vêm do Censo 2022 ou de outra base.
+- O link da página Flood do INCT está no `README.md`.
+- Segundo o enunciado, `total_buildings` vem do OpenStreetMap e `population`, do Censo IBGE 2022. A população de cada bairro bate exatamente com a soma dos setores censitários do IBGE (ver `relatorios/limpeza_dados.md`, seção 5).
 
 ### 3.2 Tabela 8.3 do Censo 2022 (`IBGE/Tab8_3.xlsx`)
 
@@ -56,8 +56,8 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 - **Colunas:** pessoas (total, homens e mulheres), renda média (total, homens e mulheres) e renda mediana (total, homens e mulheres). Antes dos dados, há duas linhas de título e duas de cabeçalho.
 - **Porto Alegre:**
   - 1.321.927 pessoas, no universo da tabela;
-  - renda média por área entre R$ 7.581 (Santana) e R$ 20.846 (Mário Quintana);
-  - renda mediana por área entre R$ 1.060,64 e R$ 10.513,96.
+  - renda média por área entre R$ 1.025,84 (Restinga Velha e Pitinga) e R$ 10.133,89 (Mont Serrat e Bela Vista);
+  - renda mediana por área entre R$ 882,40 (Restinga Velha e Pitinga) e R$ 7.250,00 (Mont Serrat e Bela Vista).
 - **Diferença de população:** a soma da tabela é 10.918 pessoas (0,8%) menor que o total de 1.332.845 do JSON. A diferença é compatível com o universo excluído acima, mas a equipe deve confirmar.
 - **Unidade:** a renda é por área de ponderação, e não por bairro. Cada área reúne um ou mais bairros, e o nome da área os lista (ex.: "Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel").
 
@@ -80,17 +80,18 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 - **Confirmação:** o PDF confirma o título da Tabela 8.3. As tabelas 8.1 e 8.2, também de rendimento, não fazem parte deste levantamento.
 - **Fonte:** IBGE (Censo 2022, resultados gerais da amostra por área de ponderação).
 
-### 3.6 Agregados básicos por setor censitário (pendente)
+### 3.6 Agregados básicos por setor censitário
 
-- Ainda não está no repositório. Está no link indicado no `README.md`.
-- É a única base que liga os setores aos bairros de Porto Alegre. Sem ela, a renda não pode ser associada aos 94 bairros da simulação.
-- Esta análise não abriu o arquivo. Os nomes dos bairros nele precisam ser comparados com os 94 nomes do JSON.
+- **Coleta:** baixado automaticamente por `scripts/limpeza_ibge.py`, a partir do link no `README.md`, e guardado em `dados/originais/IBGE/agregados/` (fora do git, por ser grande).
+- **Formato:** CSV separado por `;`, codificação latin-1, uma linha por setor censitário do Brasil.
+- **Porto Alegre:** 2.744 setores em 94 bairros, os mesmos 94 do INCT. A população somada (`v0001`) é 1.332.845, igual à do JSON do INCT.
+- É a base que liga os setores aos bairros de Porto Alegre.
 
 ## 4. Como as bases se conectam
 
 ```
 Simulação INCT (94 bairros)
-        │  bairro → setor censitário   [Agregados básicos: pendente]
+        │  bairro → setor censitário   [Agregados básicos]
         ▼
 Setor censitário (2.744 em Porto Alegre)
         │  setor → área de ponderação  [Composição]
@@ -101,4 +102,4 @@ Setor censitário (2.744 em Porto Alegre)
 Renda média e mediana por área
 ```
 
-O cruzamento tem duas limitações. A primeira é que 46 áreas de ponderação são menos que 94 bairros, então bairros da mesma área vão receber o mesmo valor de renda. A segunda é que a renda é um agregado da área, e não do bairro. Por isso, a agregação precisa de uma decisão da equipe, por exemplo uma média ponderada pela população.
+O cruzamento tem duas limitações. A primeira é que 46 áreas de ponderação são menos que 94 bairros, então bairros da mesma área vão receber o mesmo valor de renda. A segunda é que a renda é um agregado da área, e não do bairro. A decisão adotada está em `relatorios/limpeza_dados.md`, seção 5: bairros em uma área recebem a renda dessa área, e bairros em duas áreas recebem a média ponderada pela população dos setores.

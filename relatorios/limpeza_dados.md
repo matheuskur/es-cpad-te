@@ -19,7 +19,7 @@
 
 6. **Limpeza por script.** A limpeza é feita por `scripts/limpeza_inct.py`, a partir do arquivo original, sem alterações manuais. Ver a seção 3. A exploração dos dados limpos está em `notebooks/exploracao/exploracao_dados_processados.ipynb` (parte textual e numérica) e os gráficos em `notebooks/exploracao/exploracao_grafica_percentual_dados_processados.ipynb` (percentuais) e `notebooks/exploracao/exploracao_grafica_quantitativa_dados_processados.ipynb` (quantitativos), ambos aplicados a `dados/processados/INCT/inct_limpo.json`.
 
-**Uso de ferramentas de IA:** o Claude (Anthropic) foi usado para escrever parte dos scripts de verificação, de limpeza e dos notebooks, gerar o código dos gráficos e ajustar o layout. Os dados e resultados foram conferidos pela equipe de forma gráfica e numérica com base nos arquivos de origem e gráficos dos notebooks.
+**Uso de ferramentas de IA:** o Claude (Anthropic) foi usado para escrever parte significativa dos scripts de verificação, de limpeza e dos notebooks, gerar o código dos gráficos e ajustar o layout. Os dados e resultados foram conferidos pela equipe de forma gráfica e numérica com base nos arquivos de origem e gráficos dos notebooks.
 
 ## 2. Problemas identificados
 
@@ -94,7 +94,8 @@ Saídas em `dados/processados/IBGE/`:
 - `areas_ponderacao_poa.csv`: Tabela 8.3 filtrada para Porto Alegre (46 áreas).
 - `setores_areas_poa.csv`: setor -> área de ponderação (2744 setores).
 - `setores_bairros_poa.csv`: setor -> bairro e população (2744 setores).
-- `bairros_poa.csv`: os 94 bairros do INCT ligados ao IBGE, com população e área.
+- `bairros_poa.csv`: os 94 bairros do INCT ligados ao IBGE, com população e renda.
+- `bairros_renda_ponderada_detalhe.csv`: pesos de cada área para os bairros que estão em duas áreas.
 
 **Ligação entre bairros e setores.** Cada bairro do INCT foi ligado ao bairro do IBGE pelo nome, sem acentos nem pontuação. Dois nomes têm grafia diferente e foram tratados por alias: "Passo D'Areia" (IBGE: "Passo da Areia") e "Menino Deus" (IBGE: "Menino-Deus"). A ligação é feita pelo código de bairro do IBGE, e a área de cada bairro vem dos setores que o compõem.
 
