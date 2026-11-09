@@ -48,12 +48,21 @@ python scripts/limpeza_inct.py
 
 O script lê `dados/originais/INCT/data_inct_original.json` e gera `dados/processados/INCT/inct_limpo.json` (formato longo, ordenado) e `dados/processados/INCT/correcoes_inct.csv` (cada valor alterado, com os vizinhos usados). As regras estão descritas em `relatorios/limpeza_dados.md`.
 
+### Limpeza dos dados do IBGE
+
+```bash
+python scripts/limpeza_ibge.py
+```
+
+O script baixa do FTP do IBGE o ZIP de agregados por setor censitário (cerca de 15 MB), se ele ainda não existir em `dados/originais/IBGE/agregados/`. Depois, extrai o CSV, filtra Porto Alegre e gera em `dados/processados/IBGE/` a Tabela 8.3, a composição de setores, a população por setor e bairro, e a ligação entre os 94 bairros do INCT e o IBGE. As regras estão em `relatorios/limpeza_dados.md`, seção 5.
+
 ### Notebooks de exploração
 
 Em `notebooks/exploracao/`:
 - `exploracao_inct.ipynb` e `exploracao_dados_processados.ipynb`: parte textual e numérica (formato, estrutura e primeiras linhas).
 - `exploracao_grafica_percentual_*.ipynb`: gráficos em percentual.
 - `exploracao_grafica_quantitativa_*.ipynb`: gráficos com valores absolutos, um por bairro.
+- `exploracao_ibge.ipynb`: verificação dos dados processados do IBGE (ligação dos bairros, população e renda).
 
 Os sufixos `_inct` e `_dados_processados` indicam os dados originais e os processados.
 
@@ -99,7 +108,7 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 
 ### Correspondência entre áreas e bairros (IBGE)
 
-- Agregados básicos por setor censitário (código e nome do bairro, setor e população `v0001`). O ZIP não é versionado no repositório por ser grande (cerca de 15 MB); baixe pelo link:
+- Agregados básicos por setor censitário (código e nome do bairro, setor e população `v0001`). O ZIP não é versionado no repositório por ser grande (cerca de 15 MB). O script `scripts/limpeza_ibge.py` baixa pelo link abaixo, se o arquivo não existir em `dados/originais/IBGE/agregados/`:
   https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/Agregados_por_Setor_csv/Agregados_por_setores_basico_BR_20260520.zip
 - Composição das áreas de ponderação (`dados/originais/IBGE/composicao_areas_ponderacao_IBGE.xlsx`), que relaciona cada setor à sua área:
   https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Microdados_e_Areas_de_Ponderacao/Documentacao/%C3%81reas%20de%20pondera%C3%A7%C3%A3o/Composi%C3%A7%C3%A3o%20das%20%C3%81reas%20de%20Pondera%C3%A7%C3%A3o.xlsx

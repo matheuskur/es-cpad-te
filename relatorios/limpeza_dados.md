@@ -19,7 +19,7 @@
 
 6. **Limpeza por script.** A limpeza é feita por `scripts/limpeza_inct.py`, a partir do arquivo original, sem alterações manuais. Ver a seção 3. A exploração dos dados limpos está em `notebooks/exploracao/exploracao_dados_processados.ipynb` (parte textual e numérica) e os gráficos em `notebooks/exploracao/exploracao_grafica_percentual_dados_processados.ipynb` (percentuais) e `notebooks/exploracao/exploracao_grafica_quantitativa_dados_processados.ipynb` (quantitativos), ambos aplicados a `dados/processados/INCT/inct_limpo.json`.
 
-**Uso de ferramentas de IA:** o Claude (Anthropic) foi usado para escrever os scripts de verificação e de limpeza, montar parte dos notebooks, gerar o código dos gráficos e ajustar o layout. Os dados e resultados foram conferidos pela equipe de forma gráfica e numérica com base nos arquivos de origem e gráficos dos notebooks.
+**Uso de ferramentas de IA:** o Claude (Anthropic) foi usado para escrever parte dos scripts de verificação, de limpeza e dos notebooks, gerar o código dos gráficos e ajustar o layout. Os dados e resultados foram conferidos pela equipe de forma gráfica e numérica com base nos arquivos de origem e gráficos dos notebooks.
 
 ## 2. Problemas identificados
 
@@ -82,3 +82,52 @@ As correções são feitas por `scripts/limpeza_inct.py`, a partir de `dados/ori
 | 2 | Zeros em sequência | Corrigido em 9,7 m e 9,8 m (Centro Histórico), 8,8 m (Rubem Berta) e 8,1 m (Lageado). Zeros do início da curva (Lageado de 3,0 m a 4,9 m; Rubem Berta de 3,0 m a 6,2 m) mantidos. | Os zeros do início não são quedas: a curva começa em zero e sobe depois, o que é coerente com a água ainda não ter atingido o bairro. |
 | 3 | Arredondamento de `percentage` (item 2.4) | Mantido e avisado. Regra do teto da fonte preservada. | Alterar a regra mudaria os valores originais de todas as linhas; a diferença é documentada como limitação. |
 | 4 | Ordem diferente no nível 5,3 m | Corrigido. Registros ordenados alfabeticamente dentro de cada nível. | Ver a seção 3. |
+
+## 5. Limpeza dos dados do IBGE
+
+A limpeza é feita por `scripts/limpeza_ibge.py`. Para reproduzir, a partir da raiz do projeto, execute `python scripts/limpeza_ibge.py`. O script:
+1. baixa do FTP do IBGE o ZIP de agregados básicos por setor censitário, se ele não existir em `dados/originais/IBGE/agregados/` (fora do git);
+2. extrai o CSV do ZIP e lê só as colunas necessárias para Porto Alegre;
+3. lê a Tabela 8.3 e a composição de setores, já versionadas em `dados/originais/IBGE/`.
+
+Saídas em `dados/processados/IBGE/`:
+- `areas_ponderacao_poa.csv`: Tabela 8.3 filtrada para Porto Alegre (46 áreas).
+- `setores_areas_poa.csv`: setor -> área de ponderação (2744 setores).
+- `setores_bairros_poa.csv`: setor -> bairro e população (2744 setores).
+- `bairros_poa.csv`: os 94 bairros do INCT ligados ao IBGE, com população e área.
+
+**Ligação entre bairros e setores.** Cada bairro do INCT foi ligado ao bairro do IBGE pelo nome, sem acentos nem pontuação. Dois nomes têm grafia diferente e foram tratados por alias: "Passo D'Areia" (IBGE: "Passo da Areia") e "Menino Deus" (IBGE: "Menino-Deus"). A ligação é feita pelo código de bairro do IBGE, e a área de cada bairro vem dos setores que o compõem.
+
+**Resultado:**
+- Os 94 bairros foram ligados, sem ambiguidade.
+- A população por bairro bate exatamente com a do INCT em todos os 94. A soma é 1.332.845 pessoas.
+- 89 bairros estão em uma única área de ponderação. Recebem a renda média e a mediana dessa área.
+- 5 bairros estão em duas áreas de ponderação: Lomba do Pinheiro, Partenon, Petrópolis, Restinga e Sarandi. Para eles, a renda é a média das duas áreas ponderada pela população dos setores do bairro em cada área (ver a seção "Renda dos bairros em duas áreas" abaixo).
+
+**Verificação (EDA).** O notebook `notebooks/exploracao/exploracao_ibge.ipynb` confere os arquivos processados:
+- a população de cada bairro é igual à do INCT, nos 94 bairros;
+- todos os setores de Porto Alegre têm bairro, e cada bairro tem entre 2 e 117 setores;
+- nenhum valor de renda está ausente nas 46 áreas de ponderação;
+- a renda por bairro está preenchida nos 94 bairros: 89 pela área de ponderação e 5 pela média ponderada.
+
+**Renda dos bairros em duas áreas.** Para os 5 bairros que ocupam duas áreas de ponderação, a renda do bairro é a média das duas áreas, ponderada pela população dos setores do bairro em cada área. A população de cada setor é a do Censo 2022 (`v0001`), e os pesos são calculados a partir dela. O detalhamento de cada bairro está em `dados/processados/IBGE/bairros_renda_ponderada_detalhe.csv`.
+
+| Bairro | Área | População dos setores | Peso | Renda média (R$) | Renda mediana (R$) |
+|--------|------|----------------------:|-----:|-----------------:|-------------------:|
+| Lomba do Pinheiro | Agronomia e Lomba Norte | 30.938 | 0,523 | 1.699,82 | 975,00 |
+| Lomba do Pinheiro | Lomba e Centro Sul | 28.262 | 0,477 | 1.195,80 | 966,67 |
+| Partenon | Partenon Leste | 19.922 | 0,457 | 2.280,99 | 1.356,00 |
+| Partenon | Santo Antônio e Partenon Oeste | 23.665 | 0,543 | 2.801,69 | 1.950,00 |
+| Petrópolis | Petrópolis Norte | 20.386 | 0,542 | 7.450,77 | 5.667,67 |
+| Petrópolis | Petrópolis e Jardim Botânico | 17.227 | 0,458 | 6.119,11 | 4.500,00 |
+| Restinga | Restinga Velha e Pitinga | 33.840 | 0,542 | 1.025,84 | 882,40 |
+| Restinga | Restinga Nova | 28.608 | 0,458 | 1.338,71 | 1.025,00 |
+| Sarandi | Sarandi Oeste | 26.291 | 0,510 | 1.569,30 | 1.250,00 |
+| Sarandi | Sarandi e Norte Leste Sul | 25.248 | 0,490 | 2.742,70 | 2.000,00 |
+
+Resultado por bairro: Lomba do Pinheiro R$ 1.459,20 (média) e R$ 971,02 (mediana); Partenon R$ 2.563,70 e R$ 1.678,50; Petrópolis R$ 6.840,86 e R$ 5.132,87; Restinga R$ 1.169,17 e R$ 947,73; Sarandi R$ 2.144,13 e R$ 1.617,41.
+
+**Limitações deste cálculo:**
+- A média ponderada da renda média é exata, dado os pesos. A mediana não pode ser combinada de forma exata a partir das medianas das áreas. O valor da mediana acima é uma **aproximação**, a média das medianas ponderada pela população, e deve ser lido como tal.
+- Os pesos usam a população total dos setores (`v0001`), e não a população do universo da Tabela 8.3 (pessoas em domicílios particulares permanentes ocupados, exceto pensionistas e empregados domésticos). A diferença entre os dois universos é pequena, mas os pesos são uma aproximação.
+- Nos demais 89 bairros, a renda de cada área é atribuída integralmente ao bairro, e os bairros de uma mesma área recebem o mesmo valor.
