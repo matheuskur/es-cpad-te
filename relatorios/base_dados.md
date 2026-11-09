@@ -6,13 +6,13 @@ Este relatório descreve as bases escolhidas para o projeto, o que cada uma cont
 
 ## 1. Objetivo do levantamento
 
-Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a população e a renda dos bairros de Porto Alegre. Para isso, são necessárias três coisas: a simulação, a renda da população e uma ponte entre os bairros da simulação e as unidades do IBGE.
+Cruzar os níveis de inundação dos dados do INCT SiMAI para o Guaíba com a população e a renda dos bairros de Porto Alegre. Para isso, são necessárias três coisas: os dados de inundação do INCT, a renda da população e uma ponte entre os bairros do INCT e as unidades do IBGE.
 
 ## 2. Bases escolhidas
 
 | # | Base | Arquivo | Unidade de análise | Papel no projeto |
 |---|------|---------|--------------------|------------------|
-| 1 | Simulação do INCT SiMAI | `INCT/data_inct_original.json` | nível do Guaíba × bairro | Variável de inundação (edificações e pessoas afetadas) |
+| 1 | Dados do INCT SiMAI | `INCT/data_inct_original.json` | nível do Guaíba × bairro | Variável de inundação (edificações e pessoas afetadas) |
 | 2 | Tabela 8.3 do Censo 2022 (renda domiciliar per capita) | `IBGE/Tab8_3.xlsx` | área de ponderação | Renda média e mediana |
 | 3 | Composição das áreas de ponderação | `IBGE/composicao_areas_ponderacao_IBGE.xlsx` | setor censitário → área de ponderação | Ponte entre setores e áreas de renda |
 | 4 | Dicionário dos agregados por setor censitário | `IBGE/dicionario_agregados_setores_censitarios_20260520.xlsx` | variável | Documentação das variáveis do IBGE (ex.: `V0001`, total de pessoas) |
@@ -22,7 +22,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 
 ## 3. Detalhamento das bases
 
-### 3.1 Simulação do INCT SiMAI (`INCT/data_inct_original.json`)
+### 3.1 Dados do INCT SiMAI (`INCT/data_inct_original.json`)
 
 - **Formato:** JSON aninhado, organizado como nível → bairro → métricas.
 - **Níveis:** 71 chaves, de `3_0m` a `10_0m`, com passo de 0,1 m. Cada nível é uma cota do Guaíba (conforme a nota do notebook de exploração).
@@ -43,7 +43,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 
 - O comportamento não é monotônico em alguns bairros: a quantidade de edificações afetadas cai ao subir o nível em 5 bairros (Arquipélago, com 6 quedas; Espírito Santo, com 3; Centro Histórico, Lageado e Rubem Berta, com 1 cada).
 - A população afetada cai no total de 264.338 (nível 9,6 m) para 252.080 (nível 9,7 m). Isso ocorre em 4 bairros (Espírito Santo, Centro Histórico, Lageado e Rubem Berta).
-- Não é possível dizer, só pelos dados, se isso é uma propriedade do modelo ou um erro de processamento.
+- Não é possível dizer, só pelos dados, se isso é uma característica da base ou um erro de processamento.
 
 **Documentação da fonte:**
 
@@ -100,7 +100,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
   - Área afetada no município: 123,58 km² (24,95% da área total) e 37,19 km² em área urbana (21,19% da malha urbana).
   - Infraestrutura viária e estruturas: 519 km de vias afetadas, 84.523 estruturas atingidas e 17,34 km² de área construída afetada.
   - Equipamentos atingidos: 262 de saúde, 231 de ensino, 298 estabelecimentos religiosos e 185 domicílios coletivos.
-- **Papel no projeto:** Fornece o contraponto empírico e real do desastre ocorrido em maio de 2024. Enquanto a simulação do INCT modela cenários para diferentes cotas do Guaíba (3,0 m a 10,0 m) em nível de bairro, a base do Zenodo permite calibrar e contextualizar o impacto observado no evento real tanto para Porto Alegre quanto em comparação com os municípios vizinhos da bacia hidrográfica (ex.: Canoas, Eldorado do Sul e São Leopoldo).
+- **Papel no projeto:** Fornece o contraponto e contexto regional do desastre de maio de 2024. Enquanto os dados do INCT trazem diferentes cotas do Guaíba (3,0 m a 10,0 m) em nível de bairro para Porto Alegre, a base do Zenodo permite contextualizar o impacto observado tanto para Porto Alegre quanto em comparação com os municípios vizinhos da bacia hidrográfica (ex.: Canoas, Eldorado do Sul e São Leopoldo).
 
 ## 4. Como as bases se conectam
 
@@ -111,7 +111,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
                (Validação macro regional e municipal)
                                │
                                ▼
-Simulação INCT (94 bairros) ◄──┴──► Porto Alegre real (151.141 afetados)
+Dados do INCT (94 bairros) ◄───┴───► Porto Alegre (151.141 afetados)
         │  bairro → setor censitário   [Agregados básicos]
         ▼
 Setor censitário (2.744 em Porto Alegre)

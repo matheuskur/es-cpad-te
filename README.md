@@ -89,7 +89,7 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 ├── requirements.txt
 ├── dados/
 │   ├── originais/        # dados como vieram, separados por fonte
-│   │   ├── INCT/         # simulação do INCT SiMAI
+│   │   ├── INCT/         # dados do INCT SiMAI
 │   │   ├── IBGE/         # tabelas e composições do Censo 2022
 │   │   └── zenodo/       # impacto da enchente de maio/2024 na RH Guaíba
 │   └── processados/      # dados limpos, separados por fonte
@@ -108,7 +108,7 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 
 ## Fontes dos dados
 
-### Simulação do INCT SiMAI
+### Dados do INCT SiMAI
 
 - Arquivo: `dados/originais/INCT/data_inct_original.json` (originalmente `data.json`)
 - Origem: página Flood — INCT SiMAI, http://vhlab.com.br/INCT/floods/

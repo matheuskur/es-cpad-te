@@ -70,7 +70,7 @@ As correções são feitas por `scripts/limpeza_inct.py`, a partir de `dados/ori
 | Espírito Santo | 3,0 a 3,4 | 637, 637, 637, 637, 633 | substituição | 3,5 m = 25 | 25 |
 | Arquipélago | 3,0 a 10,0 (exceto 5,3) | entre 4674 e 4685 | saturação | total_buildings = 4688 | 4688 |
 
-**Nota sobre o Arquipélago.** No arquivo original, o bairro aparece com `percentage` = 100 e `affected_population` = 6411 (a população inteira) em todos os níveis, embora a contagem de prédios afetados oscile entre 4674 e 4688. Isso acontece porque a fonte usa teto no percentual: 4674 de 4688 prédios (99,7%) aparece como 100. Depois da saturação, os três campos indicam 100% em todos os níveis. A simulação atinge o bairro inteiro já no primeiro nível, e por isso a curva é plana.
+**Nota sobre o Arquipélago.** No arquivo original, o bairro aparece com `percentage` = 100 e `affected_population` = 6411 (a população inteira) em todos os níveis, embora a contagem de prédios afetados oscile entre 4674 e 4688. Isso acontece porque a fonte usa teto no percentual: 4674 de 4688 prédios (99,7%) aparece como 100. Depois da saturação, os três campos indicam 100% em todos os níveis. Os dados do INCT atingem o bairro inteiro já no primeiro nível, e por isso a curva é plana.
 
 **Espírito Santo.** A substituição do planalto inicial é uma hipótese. Os dados não explicam a diferença entre o planalto de 3,0 m a 3,4 m e a curva a partir de 3,5 m.
 
