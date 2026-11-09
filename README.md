@@ -4,7 +4,11 @@ Projeto extensionista da disciplina Coleta, Preparação e Análise de Dados (PU
 
 ## Equipe
 
-- Nome completo — matrícula — GitHub
+| Nome | GitHub |
+|------|--------|
+| Henrique Vitor Mairesse | [hmpuc](https://github.com/hmpuc) |
+| Matheus de Oliveira Kur | [matheuskur](https://github.com/matheuskur) |
+| Tarciso Mota Ney da Silva | [TarcisoNey](https://github.com/TarcisoNey) |
 
 ## Dashboard
 
