@@ -132,3 +132,35 @@ Resultado por bairro: Lomba do Pinheiro R$ 1.459,20 (média) e R$ 971,02 (median
 - A média ponderada da renda média é exata, dado os pesos. A mediana não pode ser combinada de forma exata a partir das medianas das áreas. O valor da mediana acima é uma **aproximação**, a média das medianas ponderada pela população, e deve ser lido como tal.
 - Os pesos usam a população total dos setores (`v0001`), e não a população do universo da Tabela 8.3 (pessoas em domicílios particulares permanentes ocupados, exceto pensionistas e empregados domésticos). A diferença entre os dois universos é pequena, mas os pesos são uma aproximação.
 - Nos demais 89 bairros, a renda de cada área é atribuída integralmente ao bairro, e os bairros de uma mesma área recebem o mesmo valor.
+
+## 6. Limpeza dos dados do Zenodo (ADA RH Guaíba)
+
+A limpeza e padronização dos dados do Zenodo é realizada por `scripts/limpeza_zenodo.py`. Para reproduzir, a partir da raiz do projeto:
+
+```bash
+python scripts/limpeza_zenodo.py
+```
+
+O script lê `dados/originais/zenodo/analise_ada_rhguaiba_municipios.csv` e gera em `dados/processados/zenodo/analise_ada_rhguaiba_municipios.csv` o arquivo limpo e padronizado.
+
+**Problemas identificados no arquivo original:**
+
+1. **Ponto de milhar truncado como decimal:**
+   - Em `Domicilios_Particulares_Afetados_Diretamente`, o ponto de milhar foi exportado como decimal e perdeu os zeros finais ao ser interpretado como float pela ferramenta de origem. Por exemplo, Canoas constava como `63.788` (63.788 domicílios) e São Leopoldo como `34.4` (representando 34.400 domicílios).
+   - O mesmo problema ocorreu em `Edificacao_Construcao_Afetados_Diretamente` (`1.346` para 1.346 edificações em Canoas e `1.166` para 1.166 em Porto Alegre).
+   - *Tratamento:* os valores com ponto foram multiplicados por 1.000 e convertidos para inteiros exatos (`round(float(v) * 1000)`).
+
+2. **Erro de digitação no cabeçalho:**
+   - A coluna de área municipal foi nomeada originalmente como `Area_Municpio_m2` (sem o "i").
+   - *Tratamento:* corrigido para `area_municipio_m2` e todos os cabeçalhos foram padronizados em `snake_case`.
+
+3. **Tipagem e strings com aspas:**
+   - Valores numéricos e códigos municipais continham aspas duplas (ex.: `"4314902"`, `"151141"`).
+   - *Tratamento:* aspas removidas e valores convertidos para sua tipagem numérica adequada (`int` e `float`).
+
+4. **Tratamento de valores ausentes (decisão de projeto):**
+   - 47 municípios não contêm medições de vias afetadas (`vias_diretamente_afetadas_m` e `_km`).
+   - 1 município (Victor Graeff, linha 86) não possui mapeamento de áreas, estruturas ou domicílios afetados.
+   - *Tratamento adotado:* **os campos vazios foram mantidos estritamente sem nenhum valor (vazios entre vírgulas, `,,`)**. Não foi feita substituição artificial por zero, garantindo que leituras convertam os campos automaticamente para `null`/`NaN` sem distorcer médias ou contagens analíticas.
+
+

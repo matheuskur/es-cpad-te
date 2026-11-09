@@ -18,6 +18,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 | 4 | Dicionário dos agregados por setor censitário | `IBGE/dicionario_agregados_setores_censitarios_20260520.xlsx` | variável | Documentação das variáveis do IBGE (ex.: `V0001`, total de pessoas) |
 | 5 | Lista de tabelas de resultados gerais da amostra | `IBGE/lista_tabelas_resultados_gerais_amostra_areas_ponderacao.pdf` | tabela | Catálogo que confirma o título e o tema da Tabela 8.3 |
 | 6 | Agregados básicos por setor censitário | ZIP baixado por `scripts/limpeza_ibge.py` (cerca de 15 MB, fora do git) | setor censitário → bairro | Ponte entre setores e bairros de Porto Alegre |
+| 7 | Análise da Área Diretamente Afetada (ADA) da RH Guaíba | `zenodo/analise_ada_rhguaiba_municipios.csv` | município | Dados reais do evento de maio/2024 para validação empírica e contexto regional |
 
 ## 3. Detalhamento das bases
 
@@ -87,10 +88,30 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 - **Porto Alegre:** 2.744 setores em 94 bairros, os mesmos 94 do INCT. A população somada (`v0001`) é 1.332.845, igual à do JSON do INCT.
 - É a base que liga os setores aos bairros de Porto Alegre.
 
+### 3.7 Análise da Área Diretamente Afetada (ADA) da RH Guaíba (`zenodo/analise_ada_rhguaiba_municipios.csv`)
+
+- **Origem:** Dados da análise da Área Diretamente Afetada (ADA) pelas inundações de maio de 2024 na Região Hidrográfica do Guaíba, disponibilizados via Zenodo (versão v0.4, registro [Zenodo 11177244](https://zenodo.org/records/11177244?preview_file=analise_ada_rhguaiba_municipios.csv)).
+- **Formato:** CSV com 139 registros (um por município) e 26 colunas.
+- **Cobertura regional:** cobre 139 municípios da RH do Guaíba, totalizando 632.669 pessoas e 301.738 domicílios diretamente atingidos durante a cheia de maio de 2024 (10,9% da população da bacia).
+- **Porto Alegre:**
+  - A população total de referência registrada (`Pessoas_2022`: 1.332.845) é exatamente idêntica à soma dos setores do IBGE e ao total do JSON do INCT, assegurando perfeita coerência demográfica entre as fontes.
+  - Pessoas afetadas: 151.141 (11,3% da população municipal).
+  - Domicílios afetados: 85.368 (12,4% dos 687.679 domicílios).
+  - Área afetada no município: 123,58 km² (24,95% da área total) e 37,19 km² em área urbana (21,19% da malha urbana).
+  - Infraestrutura viária e estruturas: 519 km de vias afetadas, 84.523 estruturas atingidas e 17,34 km² de área construída afetada.
+  - Equipamentos atingidos: 262 de saúde, 231 de ensino, 298 estabelecimentos religiosos e 185 domicílios coletivos.
+- **Papel no projeto:** Fornece o contraponto empírico e real do desastre ocorrido em maio de 2024. Enquanto a simulação do INCT modela cenários para diferentes cotas do Guaíba (3,0 m a 10,0 m) em nível de bairro, a base do Zenodo permite calibrar e contextualizar o impacto observado no evento real tanto para Porto Alegre quanto em comparação com os municípios vizinhos da bacia hidrográfica (ex.: Canoas, Eldorado do Sul e São Leopoldo).
+
 ## 4. Como as bases se conectam
 
 ```
-Simulação INCT (94 bairros)
+                       Zenodo (RH Guaíba)
+                   [Evento real de Maio/2024]
+                               │
+               (Validação macro regional e municipal)
+                               │
+                               ▼
+Simulação INCT (94 bairros) ◄──┴──► Porto Alegre real (151.141 afetados)
         │  bairro → setor censitário   [Agregados básicos]
         ▼
 Setor censitário (2.744 em Porto Alegre)

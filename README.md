@@ -60,6 +60,14 @@ python scripts/limpeza_ibge.py
 
 O script baixa do FTP do IBGE o ZIP de agregados por setor censitário (cerca de 15 MB), se ele ainda não existir em `dados/originais/IBGE/agregados/`. Depois, extrai o CSV, filtra Porto Alegre e gera em `dados/processados/IBGE/` a Tabela 8.3, a composição de setores, a população por setor e bairro, e a ligação entre os 94 bairros do INCT e o IBGE. As regras estão em `relatorios/limpeza_dados.md`, seção 5.
 
+### Preparação dos dados do Zenodo (ADA RH Guaíba)
+
+```bash
+python scripts/limpeza_zenodo.py
+```
+
+O script limpa e padroniza `dados/originais/zenodo/analise_ada_rhguaiba_municipios.csv`, corrigindo tipos numéricos, cabeçalhos e pontos de milhar, gerando o arquivo tratado em `dados/processados/zenodo/analise_ada_rhguaiba_municipios.csv`. As regras estão descritas em `relatorios/limpeza_dados.md`, seção 6.
+
 ### Notebooks de exploração
 
 Em `notebooks/exploracao/`:
@@ -67,6 +75,7 @@ Em `notebooks/exploracao/`:
 - `exploracao_grafica_percentual_*.ipynb`: gráficos em percentual.
 - `exploracao_grafica_quantitativa_*.ipynb`: gráficos com valores absolutos, um por bairro.
 - `exploracao_ibge.ipynb`: verificação dos dados processados do IBGE (ligação dos bairros, população e renda).
+- `exploracao_zenodo.ipynb`: exploração descritiva e gráfica dos dados da ADA RH Guaíba (Maio/2024).
 
 Os sufixos `_inct` e `_dados_processados` indicam os dados originais e os processados.
 
@@ -81,10 +90,12 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 ├── dados/
 │   ├── originais/        # dados como vieram, separados por fonte
 │   │   ├── INCT/         # simulação do INCT SiMAI
-│   │   └── IBGE/         # tabelas e composições do Censo 2022
+│   │   ├── IBGE/         # tabelas e composições do Censo 2022
+│   │   └── zenodo/       # impacto da enchente de maio/2024 na RH Guaíba
 │   └── processados/      # dados limpos, separados por fonte
 │       ├── INCT/
-│       └── IBGE/
+│       ├── IBGE/
+│       └── zenodo/
 ├── scripts/              # scripts de coleta e limpeza
 ├── notebooks/
 │   └── exploracao/       # notebooks de EDA (textual e gráfica)
@@ -118,4 +129,11 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
   https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Microdados_e_Areas_de_Ponderacao/Documentacao/%C3%81reas%20de%20pondera%C3%A7%C3%A3o/Composi%C3%A7%C3%A3o%20das%20%C3%81reas%20de%20Pondera%C3%A7%C3%A3o.xlsx
 - Dicionário dos agregados (`dados/originais/IBGE/dicionario_agregados_setores_censitarios_20260520.xlsx`):
   https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/dicionario_de_dados_agregados_por_setores_censitarios_20260520.xlsx
+
+### Análise da Área Diretamente Afetada (ADA) da RH Guaíba (Zenodo)
+
+- Arquivo: `dados/originais/zenodo/analise_ada_rhguaiba_municipios.csv`
+- Versão: v0.4
+- Conteúdo: Dados municipais consolidados do impacto das inundações de maio de 2024 na Região Hidrográfica do Guaíba (139 municípios), abrangendo população e domicílios afetados, áreas urbanas e rurais inundadas, vias atingidas e equipamentos públicos.
+- Link: https://zenodo.org/records/11177244?preview_file=analise_ada_rhguaiba_municipios.csv
 
