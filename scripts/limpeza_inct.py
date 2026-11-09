@@ -1,9 +1,9 @@
 """Limpeza dos dados do INCT SiMAI.
 
-Lê dados/originais/data_inct_original.json e gera:
-- dados/processados/inct_limpo.json: formato longo (uma linha por nível e bairro),
+Lê dados/originais/INCT/data_inct_original.json e gera:
+- dados/processados/INCT/inct_limpo.json: formato longo (uma linha por nível e bairro),
   ordenado por nível e, dentro de cada nível, por ordem alfabética do bairro.
-- dados/processados/correcoes_inct.csv: registro de cada valor alterado.
+- dados/processados/INCT/correcoes_inct.csv: registro de cada valor alterado.
 
 Uso (a partir da raiz do projeto):
     python scripts/limpeza_inct.py
@@ -16,9 +16,9 @@ import unicodedata
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-ORIGINAL = RAIZ / "dados" / "originais" / "data_inct_original.json"
-SAIDA_JSON = RAIZ / "dados" / "processados" / "inct_limpo.json"
-SAIDA_LOG = RAIZ / "dados" / "processados" / "correcoes_inct.csv"
+ORIGINAL = RAIZ / "dados" / "originais" / "INCT" / "data_inct_original.json"
+SAIDA_JSON = RAIZ / "dados" / "processados" / "INCT" / "inct_limpo.json"
+SAIDA_LOG = RAIZ / "dados" / "processados" / "INCT" / "correcoes_inct.csv"
 
 # Método 1: média dos valores válidos mais próximos à esquerda e à direita.
 # Chave: (bairro, nível em m) -> tipo de problema.

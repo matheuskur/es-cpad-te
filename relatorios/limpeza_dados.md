@@ -2,7 +2,7 @@
 
 ## 1. Processo de exploração
 
-1. **Leitura do arquivo.** Verificou-se a estrutura de `data_inct_original.json`: 71 níveis do Guaíba (de 3,0 m a 10,0 m, em passos de 0,1 m), 94 bairros por nível e cinco campos por registro.
+1. **Leitura do arquivo.** Verificou-se a estrutura de `INCT/data_inct_original.json`: 71 níveis do Guaíba (de 3,0 m a 10,0 m, em passos de 0,1 m), 94 bairros por nível e cinco campos por registro.
 
 2. **Carga em formato longo.** Foi usado o código mínimo do enunciado para gerar um DataFrame com uma linha por nível e bairro. O resultado tem 6674 linhas e 7 colunas, sem valores nulos e com os tipos esperados. A parte textual está em `notebooks/exploracao/exploracao_inct.ipynb` e os gráficos em `notebooks/exploracao/exploracao_grafica_percentual_inct.ipynb`.
 
@@ -17,7 +17,7 @@
 
 5. **Gráficos de inspeção.** Foram gerados um gráfico de prédios afetados e outro de população afetada para cada bairro, ao longo dos níveis. Em seguida, os bairros foram agrupados em pares, com cores diferentes, e os eixos foram normalizados em percentual (% de prédios afetados e % da população afetada), em grade de dois gráficos por linha. Também foi gerada a curva da população afetada da cidade, em percentual. Os gráficos percentuais estão em `notebooks/exploracao/exploracao_grafica_percentual_inct.ipynb` e `notebooks/exploracao/exploracao_grafica_percentual_dados_processados.ipynb`. Os gráficos quantitativos (valores absolutos, um gráfico por bairro) estão em `notebooks/exploracao/exploracao_grafica_quantitativa_inct.ipynb` e `notebooks/exploracao/exploracao_grafica_quantitativa_dados_processados.ipynb`.
 
-6. **Limpeza por script.** A limpeza é feita por `scripts/limpeza_inct.py`, a partir do arquivo original, sem alterações manuais. Ver a seção 3. A exploração dos dados limpos está em `notebooks/exploracao/exploracao_dados_processados.ipynb` (parte textual e numérica) e os gráficos em `notebooks/exploracao/exploracao_grafica_percentual_dados_processados.ipynb` (percentuais) e `notebooks/exploracao/exploracao_grafica_quantitativa_dados_processados.ipynb` (quantitativos), ambos aplicados a `dados/processados/inct_limpo.json`.
+6. **Limpeza por script.** A limpeza é feita por `scripts/limpeza_inct.py`, a partir do arquivo original, sem alterações manuais. Ver a seção 3. A exploração dos dados limpos está em `notebooks/exploracao/exploracao_dados_processados.ipynb` (parte textual e numérica) e os gráficos em `notebooks/exploracao/exploracao_grafica_percentual_dados_processados.ipynb` (percentuais) e `notebooks/exploracao/exploracao_grafica_quantitativa_dados_processados.ipynb` (quantitativos), ambos aplicados a `dados/processados/INCT/inct_limpo.json`.
 
 **Uso de ferramentas de IA:** o Claude (Anthropic) foi usado para escrever os scripts de verificação e de limpeza, montar parte dos notebooks, gerar o código dos gráficos e ajustar o layout. Os dados e resultados foram conferidos pela equipe de forma gráfica e numérica com base nos arquivos de origem e gráficos dos notebooks.
 
@@ -40,9 +40,9 @@
 
 ## 3. Correções aplicadas
 
-As correções são feitas por `scripts/limpeza_inct.py`, a partir de `dados/originais/data_inct_original.json`. Para reproduzir, a partir da raiz do projeto, execute `python scripts/limpeza_inct.py`. O script gera:
-- `dados/processados/inct_limpo.json`: formato longo, uma linha por nível e bairro, já ordenado.
-- `dados/processados/correcoes_inct.csv`: cada valor alterado, com os vizinhos usados no cálculo.
+As correções são feitas por `scripts/limpeza_inct.py`, a partir de `dados/originais/INCT/data_inct_original.json`. Para reproduzir, a partir da raiz do projeto, execute `python scripts/limpeza_inct.py`. O script gera:
+- `dados/processados/INCT/inct_limpo.json`: formato longo, uma linha por nível e bairro, já ordenado.
+- `dados/processados/INCT/correcoes_inct.csv`: cada valor alterado, com os vizinhos usados no cálculo.
 
 **Ordenação.** Dentro de cada nível, os bairros são ordenados em ordem alfabética, sem diferenciar acentos nem maiúsculas. Justificativa: resolve o item 2.3.
 

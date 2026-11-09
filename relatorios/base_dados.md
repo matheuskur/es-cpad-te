@@ -12,16 +12,16 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 
 | # | Base | Arquivo | Unidade de análise | Papel no projeto |
 |---|------|---------|--------------------|------------------|
-| 1 | Simulação do INCT SiMAI | `data_inct_original.json` | nível do Guaíba × bairro | Variável de inundação (edificações e pessoas afetadas) |
-| 2 | Tabela 8.3 do Censo 2022 (renda domiciliar per capita) | `Tab8_3.xlsx` | área de ponderação | Renda média e mediana |
-| 3 | Composição das áreas de ponderação | `composicao_areas_ponderacao_IBGE.xlsx` | setor censitário → área de ponderação | Ponte entre setores e áreas de renda |
-| 4 | Dicionário dos agregados por setor censitário | `dicionario_agregados_setores_censitarios_20260520.xlsx` | variável | Documentação das variáveis do IBGE (ex.: `V0001`, total de pessoas) |
-| 5 | Lista de tabelas de resultados gerais da amostra | `lista_tabelas_resultados_gerais_amostra_areas_ponderacao.pdf` | tabela | Catálogo que confirma o título e o tema da Tabela 8.3 |
+| 1 | Simulação do INCT SiMAI | `INCT/data_inct_original.json` | nível do Guaíba × bairro | Variável de inundação (edificações e pessoas afetadas) |
+| 2 | Tabela 8.3 do Censo 2022 (renda domiciliar per capita) | `IBGE/Tab8_3.xlsx` | área de ponderação | Renda média e mediana |
+| 3 | Composição das áreas de ponderação | `IBGE/composicao_areas_ponderacao_IBGE.xlsx` | setor censitário → área de ponderação | Ponte entre setores e áreas de renda |
+| 4 | Dicionário dos agregados por setor censitário | `IBGE/dicionario_agregados_setores_censitarios_20260520.xlsx` | variável | Documentação das variáveis do IBGE (ex.: `V0001`, total de pessoas) |
+| 5 | Lista de tabelas de resultados gerais da amostra | `IBGE/lista_tabelas_resultados_gerais_amostra_areas_ponderacao.pdf` | tabela | Catálogo que confirma o título e o tema da Tabela 8.3 |
 | 6 | Agregados básicos por setor censitário | ZIP não versionado (cerca de 15 MB) | setor censitário → bairro | Ponte entre setores e bairros de Porto Alegre |
 
 ## 3. Detalhamento das bases
 
-### 3.1 Simulação do INCT SiMAI (`data_inct_original.json`)
+### 3.1 Simulação do INCT SiMAI (`INCT/data_inct_original.json`)
 
 - **Formato:** JSON aninhado, organizado como nível → bairro → métricas.
 - **Níveis:** 71 chaves, de `3_0m` a `10_0m`, com passo de 0,1 m. Cada nível é uma cota do Guaíba (conforme a nota do notebook de exploração).
@@ -49,7 +49,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 - O link da fonte (`README.md`, "link a preencher") e a data de coleta ("a preencher") ainda não foram informados.
 - A origem de `population` e `total_buildings` não está descrita. Não se sabe se vêm do Censo 2022 ou de outra base.
 
-### 3.2 Tabela 8.3 do Censo 2022 (`Tab8_3.xlsx`)
+### 3.2 Tabela 8.3 do Censo 2022 (`IBGE/Tab8_3.xlsx`)
 
 - **Conteúdo:** valor do rendimento domiciliar mensal per capita, médio e mediano, dos moradores em domicílios particulares permanentes ocupados. Exclui moradores cuja condição era pensionista, empregado(a) doméstico(a) ou parente de empregado(a) doméstico(a).
 - **Recorte:** a planilha cobre o Brasil e tem 5.570 municípios. Porto Alegre (código 4314902) aparece em 46 áreas de ponderação.
@@ -61,7 +61,7 @@ Cruzar os níveis de inundação simulados pelo INCT SiMAI para o Guaíba com a 
 - **Diferença de população:** a soma da tabela é 10.918 pessoas (0,8%) menor que o total de 1.332.845 do JSON. A diferença é compatível com o universo excluído acima, mas a equipe deve confirmar.
 - **Unidade:** a renda é por área de ponderação, e não por bairro. Cada área reúne um ou mais bairros, e o nome da área os lista (ex.: "Vila Assunção, Tristeza, Vila Conceição, Pedra Redonda, Sétimo Céu e Jardim Isabel").
 
-### 3.3 Composição das áreas de ponderação (`composicao_areas_ponderacao_IBGE.xlsx`)
+### 3.3 Composição das áreas de ponderação (`IBGE/composicao_areas_ponderacao_IBGE.xlsx`)
 
 - **Colunas:** `Setor`, `Código do Município`, `Área de Ponderação` e `Nome do Município`.
 - **Tamanho:** 468.097 setores, em 5.570 municípios.
