@@ -14,6 +14,14 @@ Projeto extensionista da disciplina Coleta, Preparação e Análise de Dados (PU
 
 - Link público: _a definir_
 
+Para rodar localmente (com o ambiente ativado, a partir da raiz do projeto):
+
+```bash
+streamlit run app/app.py
+```
+
+O app abre em http://localhost:8501. O menu fica no topo e é definido em `app/app.py` (`st.navigation`), as telas ficam em `app/paginas/` (Tela 1: simulação do INCT; Tela 2: bases da equipe), a leitura dos dados processados em `app/utils/dados.py` e o tema em `.streamlit/config.toml`.
+
 ## Como rodar
 
 1. Criar e ativar o ambiente virtual:
@@ -67,6 +75,14 @@ python scripts/limpeza_zenodo.py
 ```
 
 O script limpa e padroniza `dados/originais/zenodo/analise_ada_rhguaiba_municipios.csv`, corrigindo tipos numéricos, cabeçalhos e pontos de milhar, gerando o arquivo tratado em `dados/processados/zenodo/analise_ada_rhguaiba_municipios.csv`. As regras estão descritas em `relatorios/limpeza_dados.md`, seção 6.
+
+### Malha dos bairros (mapa da Tela 1, opcional)
+
+```bash
+python scripts/malha_bairros.py
+```
+
+O script baixa a malha de bairros do Censo 2022 do IBGE, filtra Porto Alegre, liga cada polígono ao nome do bairro do INCT pelo `cd_bairro_ibge` de `dados/processados/IBGE/bairros_poa.csv` e salva `dados/processados/geo/bairros_poa.geojson`. Sem esse arquivo, a Tela 1 mostra um aviso no lugar do mapa. Se o download falhar, baixe o `.zip` da malha no site do IBGE e passe o caminho: `python scripts/malha_bairros.py caminho/arquivo.zip`.
 
 ### Notebooks de exploração
 

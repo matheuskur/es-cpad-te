@@ -1,0 +1,24 @@
+[server]
+headless = true
+runOnSave = true
+
+[browser]
+gatherUsageStats = false
+
+# Tema alinhado ao Figma "Dashboard Enchentes POA — CAPD"
+[theme]
+base = "light"
+primaryColor = "#1E6FA8"
+backgroundColor = "#F5F7FA"
+secondaryBackgroundColor = "#EAF3FA"
+textColor = "#0B1D2E"
+borderColor = "#E3E8EF"
+linkColor = "#1E6FA8"
+baseRadius = "12px"
+showWidgetBorder = true
+font = "IBM Plex Sans:https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+headingFont = "Fraunces:https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&display=swap"
+codeFont = "IBM Plex Mono:https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap"
+chartCategoricalColors = ["#1E6FA8", "#E0533D", "#6BAED6", "#0A3D62", "#F0B429"]
+chartSequentialColors = ["#DCEBF7", "#BBD7EE", "#93C1E3", "#6BAED6", "#4A96CB", "#2F7FBF", "#1E6FA8", "#155A8E", "#0F4A78", "#0A3D62"]
+
