@@ -25,12 +25,12 @@ ICONES = {
 
 CSS = f"""
 <style>
-.block-container {{ max-width: 1160px; padding-top: 4.5rem; padding-bottom: 4rem; }}
-.eyebrow {{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .12em;
+.block-container {{ max-width: 100%; padding-top: 4.5rem; padding-bottom: 4rem; padding-left: 2rem; padding-right: 2rem; }}
+.eyebrow {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .12em;
   text-transform: uppercase; color: {AZUL}; font-weight: 500; }}
-.titulo {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 40px; line-height: 1.15;
+.titulo {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 44px; line-height: 1.15;
   color: {TINTA}; margin: 6px 0 8px; }}
-.sub {{ color: {CINZA}; font-size: 16px; line-height: 1.5; max-width: 900px; }}
+.sub {{ color: {CINZA}; font-size: 18px; line-height: 1.5; max-width: 900px; }}
 
 /* bloco de destaque com o controle do nível */
 .st-key-hero {{ background: linear-gradient(90deg, {TINTA}, #14507E); border-radius: 20px;
@@ -39,65 +39,66 @@ CSS = f"""
 .st-key-hero [data-testid="stSliderThumbValue"] {{ display: none; }}  /* o valor já aparece grande acima */
 .aviso img {{ flex-shrink: 0; margin-top: 2px; }}
 .hero-top {{ display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }}
-.hero-eyebrow {{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .12em; color: rgba(255,255,255,.6); }}
+.hero-eyebrow {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .12em; color: rgba(255,255,255,.6); }}
 .hero-valor {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 80px; line-height: 1; color: #fff; }}
 .hero-valor small {{ font-size: 34px; color: rgba(255,255,255,.55); margin-left: 6px; }}
-.hero-rel {{ color: rgba(255,255,255,.7); font-size: 14px; margin-top: 6px; }}
+.hero-rel {{ color: rgba(255,255,255,.7); font-size: 15px; margin-top: 6px; }}
 .chips {{ display: flex; gap: 8px; flex-wrap: wrap; }}
 .chip {{ display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px;
   background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.9);
-  font-size: 13px; font-weight: 500; }}
+  font-size: 14px; font-weight: 500; }}
 .chip i {{ width: 8px; height: 8px; border-radius: 50%; display: inline-block; }}
-.hero-dica {{ color: rgba(255,255,255,.6); font-size: 13px; }}
+.hero-dica {{ color: rgba(255,255,255,.6); font-size: 14px; }}
 
 /* cards */
 [class*="st-key-card"] {{ background: #fff; border: 1px solid {BORDA}; border-radius: 16px; padding: 24px;
   box-shadow: 0 4px 16px rgba(11,29,46,.07); }}
-.card-t {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 20px; color: {TINTA}; display: flex;
+.card-t {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; color: {TINTA}; display: flex;
   align-items: center; gap: 10px; }}
-.card-s {{ font-size: 13px; color: {CINZA}; margin-top: 2px; }}
-.selo {{ font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .06em; padding: 3px 10px;
+.card-s {{ font-size: 14px; color: {CINZA}; margin-top: 2px; }}
+.selo {{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .06em; padding: 3px 10px;
   border-radius: 999px; background: rgba(224,83,61,.12); color: {CORAL}; font-weight: 500; }}
-.legenda {{ display: flex; gap: 14px; font-size: 12px; color: {CINZA}; margin-top: 12px; flex-wrap: wrap; }}
+.legenda {{ display: flex; gap: 14px; font-size: 13px; color: {CINZA}; margin-top: 12px; flex-wrap: wrap; }}
 .legenda i {{ width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 6px; vertical-align: -1px; }}
 
 /* indicadores */
 .kpi {{ background: #fff; border: 1px solid {BORDA}; border-radius: 16px; padding: 22px 24px;
   box-shadow: 0 4px 16px rgba(11,29,46,.07); }}
-.kpi-top {{ display: flex; align-items: center; gap: 10px; color: {CINZA}; font-weight: 500; font-size: 15px; }}
+.kpi-top {{ display: flex; align-items: center; gap: 10px; color: {CINZA}; font-weight: 500; font-size: 16px; }}
 .kpi-ic {{ width: 36px; height: 36px; border-radius: 10px; background: {CEU}; display: grid; place-items: center; }}
-.kpi-v {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 44px; color: {TINTA}; margin: 10px 0 12px; line-height: 1.1; }}
+.kpi-v {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 48px; color: {TINTA}; margin: 10px 0 12px; line-height: 1.1; }}
 .kpi-bar {{ height: 6px; border-radius: 3px; background: {CEU}; overflow: hidden; }}
 .kpi-bar span {{ display: block; height: 100%; background: {AZUL}; border-radius: 3px; }}
-.kpi-d {{ font-size: 13px; color: {CINZA}; margin-top: 12px; }}
+.kpi-d {{ font-size: 14px; color: {CINZA}; margin-top: 12px; }}
 
 /* aviso */
 .aviso {{ display: flex; gap: 14px; background: #FDF6E7; border: 1px solid rgba(138,90,18,.2); border-radius: 14px;
-  padding: 16px 20px; color: #8A5A12; font-size: 13.5px; line-height: 1.5; }}
-.aviso b {{ display: block; font-size: 14px; margin-bottom: 2px; }}
+  padding: 16px 20px; color: #8A5A12; font-size: 15px; line-height: 1.5; }}
+.aviso b {{ display: block; font-size: 16px; margin-bottom: 2px; }}
 
 /* resumo da curva */
 .resumo {{ display: flex; gap: 12px; }}
 .resumo div {{ flex: 1; background: {FUNDO}; border-radius: 12px; padding: 12px 14px; }}
 .resumo div.ativo {{ background: rgba(30,111,168,.08); }}
-.resumo span {{ font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .04em; color: {CINZA}; }}
+.resumo span {{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .04em; color: {CINZA}; }}
 .resumo div.ativo span {{ color: {AZUL}; }}
-.resumo b {{ display: block; font-size: 17px; color: {TINTA}; font-weight: 600; }}
+.resumo b {{ display: block; font-size: 19px; color: {TINTA}; font-weight: 600; }}
 
 /* ranking */
 .rk {{ width: 100%; border-collapse: collapse; margin-top: 14px; }}
-.rk th {{ font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .08em; color: {CINZA};
+.rk th {{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .08em; color: {CINZA};
   font-weight: 500; text-align: left; padding: 8px 4px; border-bottom: 1px solid {BORDA}; }}
-.rk td {{ padding: 10px 4px; border-bottom: 1px solid {BORDA}; font-size: 15px; color: {TINTA}; }}
-.rk .pos {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {CINZA}; width: 26px; }}
+.rk td {{ padding: 10px 4px; border-bottom: 1px solid {BORDA}; font-size: 16px; color: {TINTA}; }}
+.rk .pos {{ font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: {CINZA}; width: 28px; }}
 .rk .nome {{ font-weight: 500; }}
 .rk .num {{ text-align: right; font-weight: 600; }}
 .rk .barra {{ width: 90px; }}
 .rk .barra div {{ height: 6px; border-radius: 3px; background: {CEU}; overflow: hidden; }}
 .rk .barra span {{ display: block; height: 100%; background: {AZUL}; }}
-.rk .pct span {{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {AZUL_ESCURO}; background: {CEU};
-  border-radius: 999px; padding: 3px 0; display: inline-block; width: 52px; text-align: center; }}
-.rodape {{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {CINZA}; margin-top: 8px; }}
+.rk .pct {{ text-align: center; width: 76px; }}
+.rk .pct span {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {AZUL_ESCURO}; background: {CEU};
+  border-radius: 999px; padding: 3px 0; display: inline-block; width: 56px; text-align: center; }}
+.rodape {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {CINZA}; margin-top: 8px; }}
 </style>
 """
 
@@ -145,7 +146,7 @@ def estilo_plotly(fig: go.Figure, altura: int) -> go.Figure:
         margin=dict(l=0, r=8, t=8, b=0),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="IBM Plex Sans, sans-serif", size=13, color=TINTA),
+        font=dict(family="IBM Plex Sans, sans-serif", size=14, color=TINTA),
         separators=",.",
         showlegend=False,
         hoverlabel=dict(bgcolor=TINTA, font_color="#fff", font_family="IBM Plex Sans, sans-serif"),

@@ -127,8 +127,52 @@ st.html(
     "como ordem de grandeza, não como previsão.</div></div>"
 )
 
-# ---------- % de prédios por bairro + mapa ----------
-col_barras, col_mapa = st.columns([1.55, 1], gap="medium")
+# ---------- curva da cidade (largura total) ----------
+with st.container(key="card_curva"):
+    st.html(card_titulo(
+        "População afetada por nível do lago",
+        f"Soma da cidade ({n_bairros} bairros) · tracejado: recorde de maio/2024",
+    ))
+    y_atual = serie.loc[serie["nivel_m"] == nivel, "pessoas"].iloc[0]
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=serie["nivel_m"], y=serie["pessoas"], mode="lines",
+        line=dict(color=AZUL, width=3, shape="spline", smoothing=0.4),
+        fill="tozeroy", fillcolor="rgba(30,111,168,0.12)",
+        hovertemplate="%{x:.1f} m<br><b>%{y:,.0f} pessoas</b><extra></extra>",
+    ))
+    fig.add_vline(x=NIVEL_RECORDE_2024, line=dict(color=CORAL, width=1.5, dash="dash"))
+    fig.add_annotation(
+        x=NIVEL_RECORDE_2024, y=1, yref="paper", text="Recorde · 5,35 m", showarrow=False,
+        xanchor="left", yanchor="top", xshift=6, bgcolor=CORAL, borderpad=4,
+        font=dict(color="#FFFFFF", family="IBM Plex Mono, monospace", size=12),
+    )
+    fig.add_trace(go.Scatter(
+        x=[nivel], y=[y_atual], mode="markers", hoverinfo="skip",
+        marker=dict(size=12, color="#FFFFFF", line=dict(color=AZUL, width=3)),
+    ))
+    fig.add_annotation(
+        x=nivel, y=y_atual, showarrow=False, align="left", borderpad=8, bgcolor=TINTA,
+        xanchor="right" if nivel > 8 else "left", xshift=-14 if nivel > 8 else 14,
+        yanchor="top", yshift=-8, font=dict(color="#FFFFFF", size=14),
+        text=f"<span style='font-size:12px'>{fmt_m(nivel)}</span><br><b>{fmt_int(y_atual)} pessoas</b>",
+    )
+    fig.update_xaxes(range=[NIVEL_MIN - 0.05, NIVEL_MAX + 0.1], dtick=1, ticksuffix=" m", showgrid=False,
+                     tickfont=dict(family="IBM Plex Mono, monospace", size=12, color=CINZA))
+    fig.update_yaxes(rangemode="tozero", gridcolor=BORDA, griddash="dot", tickformat=",.0f",
+                     tickfont=dict(family="IBM Plex Mono, monospace", size=12, color=CINZA))
+    estilo_plotly(fig, 330)
+    st.plotly_chart(fig, config=PLOTLY_CONFIG, key="curva")
+
+    pontos = [(NIVEL_MIN, "início"), (nivel, "escolhido"), (NIVEL_MAX, "máximo")]
+    st.html('<div class="resumo">' + "".join(
+        f'<div class="{"ativo" if rot == "escolhido" else ""}"><span>{fmt_m(n)} · {rot.upper()}</span>'
+        f'<b>{fmt_int(serie.loc[serie["nivel_m"] == round(n, 1), "pessoas"].iloc[0])} pessoas</b></div>'
+        for n, rot in pontos
+    ) + "</div>")
+
+# ---------- % de prédios por bairro + ranking ----------
+col_barras, col_rank = st.columns([1.2, 1], gap="medium")
 
 with col_barras, st.container(key="card_barras"):
     ordem = atingidos.sort_values(["percentage", "affected_buildings"], ascending=[False, False])
@@ -148,7 +192,7 @@ with col_barras, st.container(key="card_barras"):
                 marker_color=[cor_faixa(p) for p in ordem["percentage"]],
                 text=[f"{p}%" for p in ordem["percentage"]],
                 textposition="outside",
-                textfont=dict(family="IBM Plex Mono, monospace", size=12),
+                textfont=dict(family="IBM Plex Mono, monospace", size=13),
                 cliponaxis=False,
                 customdata=ordem[["affected_buildings", "total_buildings"]],
                 hovertemplate="<b>%{y}</b><br>%{x}% dos prédios<br>"
@@ -159,11 +203,44 @@ with col_barras, st.container(key="card_barras"):
         fig.update_xaxes(range=[0, 112], visible=False)
         fig.update_yaxes(autorange="reversed", ticksuffix="  ", showgrid=False)
         estilo_plotly(fig, max(260, 30 * len(ordem) + 20))
-        with st.container(height=420, border=False):
+        with st.container(height=500, border=False):
             st.plotly_chart(fig, config=PLOTLY_CONFIG, key="barras")
 
-with col_mapa, st.container(key="card_mapa"):
-    st.html(card_titulo("Mapa dos bairros", "Cor = % de prédios afetados"))
+with col_rank, st.container(key="card_ranking"):
+    st.html(card_titulo("Bairros mais afetados", "Por pessoas afetadas no nível escolhido"))
+    top = atingidos.nlargest(10, "affected_population")
+    if top.empty:
+        st.info("Nenhum bairro tem pessoas afetadas neste nível.")
+    else:
+        maximo = top["affected_population"].max()
+        linhas = "".join(
+            f'<tr><td class="pos">{i:02d}</td><td class="nome">{r.bairro}</td>'
+            f'<td class="barra"><div><span style="width:{100 * r.affected_population / maximo:.0f}%">'
+            f'</span></div></td><td class="num">{fmt_int(r.affected_population)}</td>'
+            f'<td class="pct"><span>{r.percentage}%</span></td></tr>'
+            for i, r in enumerate(top.itertuples(), start=1)
+        )
+        st.html(
+            '<table class="rk"><tr><th>#</th><th>BAIRRO</th><th></th>'
+            '<th style="text-align:right">PESSOAS</th><th style="text-align:center">% PRÉD.</th></tr>'
+            f"{linhas}</table>"
+        )
+
+# ---------- mapa dos bairros (largura total) ----------
+with st.container(key="card_mapa"):
+    barra_cores = (
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:260px">'
+        '<div style="width:100%;height:10px;border-radius:999px;'
+        'background:linear-gradient(90deg,#E9EEF3 0%,#BBD7EE 25%,#6BAED6 50%,#2F7FBF 75%,#0A3D62 100%)"></div>'
+        f'<div style="width:100%;display:flex;justify-content:space-between;font-family:\'IBM Plex Mono\',monospace;'
+        f'font-size:12px;color:{CINZA}"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>'
+        "</div>"
+    )
+    st.html(
+        '<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px">'
+        f'<div>{card_titulo("Mapa dos bairros", "Cor = % de prédios afetados")}</div>'
+        f"{barra_cores}<div></div></div>"
+    )
     malha = carregar_geojson_bairros()
     if malha is None:
         st.html(
@@ -190,75 +267,9 @@ with col_mapa, st.container(key="card_mapa"):
             labels={"percentage": "% prédios", "affected_population": "Pessoas"},
         )
         fig.update_traces(marker_line_color="#FFFFFF", marker_line_width=0.6)
-        fig.update_layout(coloraxis_colorbar=dict(title="", ticksuffix="%", thickness=10, len=0.6))
-        estilo_plotly(fig, 440)
+        fig.update_layout(coloraxis_showscale=False)
+        estilo_plotly(fig, 880)
         st.plotly_chart(fig, config=PLOTLY_CONFIG, key="mapa")
-
-# ---------- curva da cidade + ranking ----------
-col_curva, col_rank = st.columns([1.35, 1], gap="medium")
-
-with col_curva, st.container(key="card_curva"):
-    st.html(card_titulo(
-        "População afetada por nível do lago",
-        f"Soma da cidade ({n_bairros} bairros) · tracejado: recorde de maio/2024",
-    ))
-    y_atual = serie.loc[serie["nivel_m"] == nivel, "pessoas"].iloc[0]
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=serie["nivel_m"], y=serie["pessoas"], mode="lines",
-        line=dict(color=AZUL, width=3, shape="spline", smoothing=0.4),
-        fill="tozeroy", fillcolor="rgba(30,111,168,0.12)",
-        hovertemplate="%{x:.1f} m<br><b>%{y:,.0f} pessoas</b><extra></extra>",
-    ))
-    fig.add_vline(x=NIVEL_RECORDE_2024, line=dict(color=CORAL, width=1.5, dash="dash"))
-    fig.add_annotation(
-        x=NIVEL_RECORDE_2024, y=1, yref="paper", text="Recorde · 5,35 m", showarrow=False,
-        xanchor="left", yanchor="top", xshift=6, bgcolor=CORAL, borderpad=4,
-        font=dict(color="#FFFFFF", family="IBM Plex Mono, monospace", size=11),
-    )
-    fig.add_trace(go.Scatter(
-        x=[nivel], y=[y_atual], mode="markers", hoverinfo="skip",
-        marker=dict(size=12, color="#FFFFFF", line=dict(color=AZUL, width=3)),
-    ))
-    fig.add_annotation(
-        x=nivel, y=y_atual, showarrow=False, align="left", borderpad=8, bgcolor=TINTA,
-        xanchor="right" if nivel > 8 else "left", xshift=-14 if nivel > 8 else 14,
-        yanchor="top", yshift=-8, font=dict(color="#FFFFFF", size=13),
-        text=f"<span style='font-size:11px'>{fmt_m(nivel)}</span><br><b>{fmt_int(y_atual)} pessoas</b>",
-    )
-    fig.update_xaxes(range=[NIVEL_MIN - 0.05, NIVEL_MAX + 0.1], dtick=1, ticksuffix=" m", showgrid=False,
-                     tickfont=dict(family="IBM Plex Mono, monospace", size=11, color=CINZA))
-    fig.update_yaxes(rangemode="tozero", gridcolor=BORDA, griddash="dot", tickformat=",.0f",
-                     tickfont=dict(family="IBM Plex Mono, monospace", size=11, color=CINZA))
-    estilo_plotly(fig, 330)
-    st.plotly_chart(fig, config=PLOTLY_CONFIG, key="curva")
-
-    pontos = [(NIVEL_MIN, "início"), (nivel, "escolhido"), (NIVEL_MAX, "máximo")]
-    st.html('<div class="resumo">' + "".join(
-        f'<div class="{"ativo" if rot == "escolhido" else ""}"><span>{fmt_m(n)} · {rot.upper()}</span>'
-        f'<b>{fmt_int(serie.loc[serie["nivel_m"] == round(n, 1), "pessoas"].iloc[0])} pessoas</b></div>'
-        for n, rot in pontos
-    ) + "</div>")
-
-with col_rank, st.container(key="card_ranking"):
-    st.html(card_titulo("Bairros mais afetados", "Por pessoas afetadas no nível escolhido"))
-    top = atingidos.nlargest(10, "affected_population")
-    if top.empty:
-        st.info("Nenhum bairro tem pessoas afetadas neste nível.")
-    else:
-        maximo = top["affected_population"].max()
-        linhas = "".join(
-            f'<tr><td class="pos">{i:02d}</td><td class="nome">{r.bairro}</td>'
-            f'<td class="barra"><div><span style="width:{100 * r.affected_population / maximo:.0f}%">'
-            f'</span></div></td><td class="num">{fmt_int(r.affected_population)}</td>'
-            f'<td class="pct"><span>{r.percentage}%</span></td></tr>'
-            for i, r in enumerate(top.itertuples(), start=1)
-        )
-        st.html(
-            '<table class="rk"><tr><th>#</th><th>BAIRRO</th><th></th>'
-            '<th style="text-align:right">PESSOAS</th><th style="text-align:center">% PRÉD.</th></tr>'
-            f"{linhas}</table>"
-        )
 
 st.html(
     '<div class="rodape">Fonte: INCT SiMAI (vhlab.com.br/INCT/floods) · limpeza: '
