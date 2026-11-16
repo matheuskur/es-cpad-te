@@ -163,7 +163,7 @@ with col_barras, st.container(key="card_barras"):
             st.plotly_chart(fig, config=PLOTLY_CONFIG, key="barras")
 
 with col_mapa, st.container(key="card_mapa"):
-    st.html(card_titulo("Mapa dos bairros", "Cor = % de prédios afetados", "DIFERENCIAL"))
+    st.html(card_titulo("Mapa dos bairros", "Cor = % de prédios afetados"))
     malha = carregar_geojson_bairros()
     if malha is None:
         st.html(
@@ -199,7 +199,7 @@ col_curva, col_rank = st.columns([1.35, 1], gap="medium")
 
 with col_curva, st.container(key="card_curva"):
     st.html(card_titulo(
-        "População afetada por nível do rio",
+        "População afetada por nível do lago",
         f"Soma da cidade ({n_bairros} bairros) · tracejado: recorde de maio/2024",
     ))
     y_atual = serie.loc[serie["nivel_m"] == nivel, "pessoas"].iloc[0]
