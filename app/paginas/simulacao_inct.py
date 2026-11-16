@@ -575,5 +575,5 @@ with st.container(key="card_mapa"):
 
 st.html(
     '<div class="rodape">Fonte: INCT SiMAI (vhlab.com.br/INCT/floods) · limpeza: '
-    "scripts/limpeza_inct.py · Projeto extensionista CAPD — PUCRS</div>"
+    "scripts/limpeza_inct.py · Projeto extensionista CPAD — PUCRS</div>"
 )
