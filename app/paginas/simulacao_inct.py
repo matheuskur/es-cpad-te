@@ -175,27 +175,61 @@ with st.container(key="card_curva"):
 col_barras, col_rank = st.columns([1.2, 1], gap="medium")
 
 with col_barras, st.container(key="card_barras"):
-    ordem = atingidos.sort_values(["percentage", "affected_buildings"], ascending=[False, False])
-    sub = f"% dos prédios de cada bairro atingido · {len(ordem)} bairros"
+    cab_esq, cab_dir = st.columns([2, 1], vertical_alignment="top")
+    with cab_dir:
+        modo = (
+            st.segmented_control(
+                "Métrica do gráfico",
+                ["Prédios", "População"],
+                default="Prédios",
+                key="modo_barras",
+                label_visibility="collapsed",
+            )
+            or "Prédios"
+        )
+
+    if modo == "Prédios":
+        ordem = atingidos.sort_values(["percentage", "affected_buildings"], ascending=[False, False])
+        valores = ordem["percentage"]
+        custom = ordem[["affected_buildings", "total_buildings"]]
+        titulo_barras = "Prédios afetados por bairro"
+        sub_base = "% dos prédios de cada bairro atingido"
+        hover_rot = "dos prédios"
+    else:
+        atingidos_pop = atual[atual["affected_population"] > 0].copy()
+        atingidos_pop["pct_pop"] = (
+            (atingidos_pop["affected_population"] / atingidos_pop["population"].where(atingidos_pop["population"] > 0))
+            * 100
+        ).fillna(0).clip(upper=100).round().astype(int)
+        ordem = atingidos_pop.sort_values(["pct_pop", "affected_population"], ascending=[False, False])
+        valores = ordem["pct_pop"]
+        custom = ordem[["affected_population", "population"]]
+        titulo_barras = "População afetada por bairro"
+        sub_base = "% da população de cada bairro atingida"
+        hover_rot = "da população"
+
+    sub = f"{sub_base} · {len(ordem)} bairros"
     if len(ordem) > 13:
         sub += " · role para ver todos"
     legenda = "".join(f'<span><i style="background:{cor}"></i>{rot}</span>' for _, cor, rot in reversed(FAIXAS))
-    st.html(card_titulo("Prédios afetados por bairro", sub) + f'<div class="legenda">{legenda}</div>')
+    with cab_esq:
+        st.html(card_titulo(titulo_barras, sub) + f'<div class="legenda">{legenda}</div>')
+
     if ordem.empty:
-        st.info("Nenhum bairro tem prédios afetados neste nível.")
+        st.info(f"Nenhum bairro tem {modo.lower()} afetados neste nível.")
     else:
         fig = go.Figure(
             go.Bar(
-                x=ordem["percentage"],
+                x=valores,
                 y=ordem["bairro"],
                 orientation="h",
-                marker_color=[cor_faixa(p) for p in ordem["percentage"]],
-                text=[f"{p}%" for p in ordem["percentage"]],
+                marker_color=[cor_faixa(p) for p in valores],
+                text=[f"{p}%" for p in valores],
                 textposition="outside",
                 textfont=dict(family="IBM Plex Mono, monospace", size=13),
                 cliponaxis=False,
-                customdata=ordem[["affected_buildings", "total_buildings"]],
-                hovertemplate="<b>%{y}</b><br>%{x}% dos prédios<br>"
+                customdata=custom,
+                hovertemplate=f"<b>%{{y}}</b><br>%{{x}}% {hover_rot}<br>"
                 "%{customdata[0]:,.0f} de %{customdata[1]:,.0f}<extra></extra>",
             )
         )
@@ -268,7 +302,7 @@ with st.container(key="card_mapa"):
         )
         fig.update_traces(marker_line_color="#FFFFFF", marker_line_width=0.6)
         fig.update_layout(coloraxis_showscale=False)
-        estilo_plotly(fig, 880)
+        estilo_plotly(fig, 740)
         st.plotly_chart(fig, config=PLOTLY_CONFIG, key="mapa")
 
 st.html(
