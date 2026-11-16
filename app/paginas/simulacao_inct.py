@@ -127,12 +127,12 @@ st.html(
     "como ordem de grandeza, não como previsão.</div></div>"
 )
 
-# ---------- curva da cidade (largura total) ----------
-with st.container(key="card_curva"):
-    st.html(card_titulo(
-        "População afetada por nível do lago",
-        f"Soma da cidade ({n_bairros} bairros) · tracejado: recorde de maio/2024",
-    ))
+for k_exp in ("exp_curva", "exp_barras", "exp_mapa"):
+    if k_exp not in st.session_state:
+        st.session_state[k_exp] = False
+
+
+def criar_figura_curva(altura: int, fonte: int = 14) -> go.Figure:
     y_atual = serie.loc[serie["nivel_m"] == nivel, "pessoas"].iloc[0]
     fig = go.Figure()
     fig.add_trace(go.Scatter(
@@ -145,7 +145,7 @@ with st.container(key="card_curva"):
     fig.add_annotation(
         x=NIVEL_RECORDE_2024, y=1, yref="paper", text="Recorde · 5,35 m", showarrow=False,
         xanchor="left", yanchor="top", xshift=6, bgcolor=CORAL, borderpad=4,
-        font=dict(color="#FFFFFF", family="IBM Plex Mono, monospace", size=12),
+        font=dict(color="#FFFFFF", family="IBM Plex Mono, monospace", size=fonte - 2),
     )
     fig.add_trace(go.Scatter(
         x=[nivel], y=[y_atual], mode="markers", hoverinfo="skip",
@@ -154,15 +154,103 @@ with st.container(key="card_curva"):
     fig.add_annotation(
         x=nivel, y=y_atual, showarrow=False, align="left", borderpad=8, bgcolor=TINTA,
         xanchor="right" if nivel > 8 else "left", xshift=-14 if nivel > 8 else 14,
-        yanchor="top", yshift=-8, font=dict(color="#FFFFFF", size=14),
-        text=f"<span style='font-size:12px'>{fmt_m(nivel)}</span><br><b>{fmt_int(y_atual)} pessoas</b>",
+        yanchor="top", yshift=-8, font=dict(color="#FFFFFF", size=fonte),
+        text=f"<span style='font-size:{fonte - 2}px'>{fmt_m(nivel)}</span><br><b>{fmt_int(y_atual)} pessoas</b>",
     )
     fig.update_xaxes(range=[NIVEL_MIN - 0.05, NIVEL_MAX + 0.1], dtick=1, ticksuffix=" m", showgrid=False,
-                     tickfont=dict(family="IBM Plex Mono, monospace", size=12, color=CINZA))
+                     tickfont=dict(family="IBM Plex Mono, monospace", size=fonte - 2, color=CINZA))
     fig.update_yaxes(rangemode="tozero", gridcolor=BORDA, griddash="dot", tickformat=",.0f",
-                     tickfont=dict(family="IBM Plex Mono, monospace", size=12, color=CINZA))
-    estilo_plotly(fig, 330)
-    st.plotly_chart(fig, config=PLOTLY_CONFIG, key="curva")
+                     tickfont=dict(family="IBM Plex Mono, monospace", size=fonte - 2, color=CINZA))
+    estilo_plotly(fig, altura)
+    fig.update_layout(font=dict(size=fonte))
+    return fig
+
+
+def criar_figura_barras(
+    ordem, valores, custom, hover_rot: str, altura_min: int = 260, fonte: int = 14, passo_barra: int = 30
+) -> go.Figure:
+    fig = go.Figure(
+        go.Bar(
+            x=valores,
+            y=ordem["bairro"],
+            orientation="h",
+            marker_color=[cor_faixa(p) for p in valores],
+            text=[f"{p}%" for p in valores],
+            textposition="outside",
+            textfont=dict(family="IBM Plex Mono, monospace", size=fonte - 2, color=TINTA),
+            cliponaxis=False,
+            customdata=custom,
+            hovertemplate=f"<b>%{{y}}</b><br>%{{x}}% {hover_rot}<br>"
+            "%{customdata[0]:,.0f} de %{customdata[1]:,.0f}<extra></extra>",
+        )
+    )
+    fig.update_layout(barcornerradius=6, bargap=0.45)
+    fig.update_xaxes(range=[0, 112], visible=False)
+    fig.update_yaxes(
+        autorange="reversed",
+        ticksuffix="  ",
+        showgrid=False,
+        tickfont=dict(family="IBM Plex Sans, sans-serif", size=fonte - 1, color=TINTA),
+    )
+    estilo_plotly(fig, max(altura_min, passo_barra * len(ordem) + 20))
+    fig.update_layout(font=dict(size=fonte))
+    return fig
+
+
+def criar_figura_mapa(malha: dict, zoom_atual: float, inclinado: bool, altura: int, fonte: int = 14) -> go.Figure:
+    fig = px.choropleth_map(
+        atual,
+        geojson=malha,
+        locations="bairro",
+        featureidkey="properties.bairro",
+        color="percentage",
+        range_color=(0, 100),
+        color_continuous_scale=["#E9EEF3", "#BBD7EE", "#6BAED6", "#2F7FBF", "#0A3D62"],
+        map_style="carto-positron",
+        center={"lat": -30.09, "lon": -51.17},
+        zoom=zoom_atual,
+        opacity=0.9,
+        hover_name="bairro",
+        hover_data={"bairro": False, "percentage": True, "affected_population": True},
+        labels={"percentage": "% prédios", "affected_population": "Pessoas"},
+    )
+    fig.update_traces(marker_line_color="#FFFFFF", marker_line_width=0.6)
+    fig.update_layout(
+        coloraxis_showscale=False,
+        uirevision=f"{zoom_atual}-{inclinado}",
+        map=dict(
+            pitch=45 if inclinado else 0,
+            bearing=-15 if inclinado else 0,
+        ),
+    )
+    estilo_plotly(fig, altura)
+    fig.update_layout(font=dict(size=fonte))
+    return fig
+
+
+# ---------- curva da cidade (largura total) ----------
+with st.container(key="card_curva"):
+    exp_curva = st.session_state["exp_curva"]
+    cab_esq, cab_exp = st.columns([16, 1], vertical_alignment="top")
+    with cab_esq:
+        st.html(card_titulo(
+            "População afetada por nível do lago",
+            f"Soma da cidade ({n_bairros} bairros) · tracejado: recorde de maio/2024",
+        ))
+    if cab_exp.button(
+        "⤡" if exp_curva else "⤢",
+        key="expandir_curva",
+        help="Reduzir gráfico" if exp_curva else "Expandir gráfico",
+        use_container_width=True,
+    ):
+        st.session_state["exp_curva"] = not exp_curva
+        st.rerun()
+
+    st.plotly_chart(
+        criar_figura_curva(620 if exp_curva else 330, fonte=17 if exp_curva else 14),
+        config=PLOTLY_CONFIG,
+        key="curva",
+    )
 
     pontos = [(NIVEL_MIN, "início"), (nivel, "escolhido"), (NIVEL_MAX, "máximo")]
     st.html('<div class="resumo">' + "".join(
@@ -172,10 +260,15 @@ with st.container(key="card_curva"):
     ) + "</div>")
 
 # ---------- % de prédios por bairro + ranking ----------
-col_barras, col_rank = st.columns([1.2, 1], gap="medium")
+exp_barras = st.session_state["exp_barras"]
+if exp_barras:
+    col_barras = st.container()
+    col_rank = st.container()
+else:
+    col_barras, col_rank = st.columns([1.2, 1], gap="medium")
 
 with col_barras, st.container(key="card_barras"):
-    cab_esq, cab_dir = st.columns([2, 1], vertical_alignment="top")
+    cab_esq, cab_dir, cab_exp = st.columns([2, 1, 0.3], vertical_alignment="top")
     with cab_dir:
         modo = (
             st.segmented_control(
@@ -209,36 +302,34 @@ with col_barras, st.container(key="card_barras"):
         hover_rot = "da população"
 
     sub = f"{sub_base} · {len(ordem)} bairros"
-    if len(ordem) > 13:
+    if len(ordem) > 13 and not exp_barras:
         sub += " · role para ver todos"
     legenda = "".join(f'<span><i style="background:{cor}"></i>{rot}</span>' for _, cor, rot in reversed(FAIXAS))
     with cab_esq:
         st.html(card_titulo(titulo_barras, sub) + f'<div class="legenda">{legenda}</div>')
+    if cab_exp.button(
+        "⤡" if exp_barras else "⤢",
+        key="expandir_barras",
+        help="Reduzir gráfico" if exp_barras else "Expandir gráfico",
+        use_container_width=True,
+    ):
+        st.session_state["exp_barras"] = not exp_barras
+        st.rerun()
 
     if ordem.empty:
         st.info(f"Nenhum bairro tem {modo.lower()} afetados neste nível.")
     else:
-        fig = go.Figure(
-            go.Bar(
-                x=valores,
-                y=ordem["bairro"],
-                orientation="h",
-                marker_color=[cor_faixa(p) for p in valores],
-                text=[f"{p}%" for p in valores],
-                textposition="outside",
-                textfont=dict(family="IBM Plex Mono, monospace", size=13),
-                cliponaxis=False,
-                customdata=custom,
-                hovertemplate=f"<b>%{{y}}</b><br>%{{x}}% {hover_rot}<br>"
-                "%{customdata[0]:,.0f} de %{customdata[1]:,.0f}<extra></extra>",
-            )
+        fig_barras = criar_figura_barras(
+            ordem, valores, custom, hover_rot,
+            altura_min=620 if exp_barras else 260,
+            fonte=22 if exp_barras else 17,
+            passo_barra=40 if exp_barras else 34,
         )
-        fig.update_layout(barcornerradius=6, bargap=0.45)
-        fig.update_xaxes(range=[0, 112], visible=False)
-        fig.update_yaxes(autorange="reversed", ticksuffix="  ", showgrid=False)
-        estilo_plotly(fig, max(260, 30 * len(ordem) + 20))
-        with st.container(height=500, border=False):
-            st.plotly_chart(fig, config=PLOTLY_CONFIG, key="barras")
+        if exp_barras:
+            st.plotly_chart(fig_barras, config=PLOTLY_CONFIG, key="barras")
+        else:
+            with st.container(height=500, border=False):
+                st.plotly_chart(fig_barras, config=PLOTLY_CONFIG, key="barras")
 
 with col_rank, st.container(key="card_ranking"):
     st.html(card_titulo("Bairros mais afetados", "Por pessoas afetadas no nível escolhido"))
@@ -275,13 +366,26 @@ with st.container(key="card_mapa"):
         f'font-size:12px;color:{CINZA}"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>'
         "</div>"
     )
-    st.html(
-        '<div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px">'
-        f'<div>{card_titulo("Mapa dos bairros", "Cor = % de prédios afetados")}</div>'
-        f"{barra_cores}<div></div></div>"
-    )
-
     malha = carregar_geojson_bairros()
+    zoom_atual = st.session_state["mapa_zoom"]
+    inclinado = st.session_state["mapa_inclinado"]
+
+    exp_mapa = st.session_state["exp_mapa"]
+    cab_titulo, cab_cor, cab_exp = st.columns([4, 3, 0.45], vertical_alignment="center")
+    with cab_titulo:
+        st.html(card_titulo("Mapa dos bairros", "Cor = % de prédios afetados"))
+    with cab_cor:
+        st.html(barra_cores)
+    if cab_exp.button(
+        "⤡" if exp_mapa else "⤢",
+        key="expandir_mapa",
+        help="Reduzir mapa" if exp_mapa else "Expandir mapa",
+        use_container_width=True,
+        disabled=malha is None,
+    ):
+        st.session_state["exp_mapa"] = not exp_mapa
+        st.rerun()
+
     if malha is None:
         st.html(
             f'<div style="border:1px dashed {BORDA};border-radius:12px;padding:28px 20px;'
@@ -290,35 +394,11 @@ with st.container(key="card_mapa"):
             "para ver o mapa.</div>"
         )
     else:
-        zoom_atual = st.session_state["mapa_zoom"]
-        inclinado = st.session_state["mapa_inclinado"]
-        fig = px.choropleth_map(
-            atual,
-            geojson=malha,
-            locations="bairro",
-            featureidkey="properties.bairro",
-            color="percentage",
-            range_color=(0, 100),
-            color_continuous_scale=["#E9EEF3", "#BBD7EE", "#6BAED6", "#2F7FBF", "#0A3D62"],
-            map_style="carto-positron",
-            center={"lat": -30.09, "lon": -51.17},
-            zoom=zoom_atual,
-            opacity=0.9,
-            hover_name="bairro",
-            hover_data={"bairro": False, "percentage": True, "affected_population": True},
-            labels={"percentage": "% prédios", "affected_population": "Pessoas"},
+        st.plotly_chart(
+            criar_figura_mapa(malha, zoom_atual, inclinado, 860 if exp_mapa else 740, fonte=17 if exp_mapa else 14),
+            config=PLOTLY_CONFIG,
+            key="mapa",
         )
-        fig.update_traces(marker_line_color="#FFFFFF", marker_line_width=0.6)
-        fig.update_layout(
-            coloraxis_showscale=False,
-            uirevision=f"{zoom_atual}-{inclinado}",
-            map=dict(
-                pitch=45 if inclinado else 0,
-                bearing=-15 if inclinado else 0,
-            ),
-        )
-        estilo_plotly(fig, 740)
-        st.plotly_chart(fig, config=PLOTLY_CONFIG, key="mapa")
 
         with st.container(key="mapa_controles"):
             if st.button("＋", key="zoom_mais", help="Aproximar", use_container_width=True):

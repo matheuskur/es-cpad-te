@@ -52,13 +52,16 @@ CSS = f"""
 
 /* cards */
 [class*="st-key-card"] {{ background: #fff; border: 1px solid {BORDA}; border-radius: 16px; padding: 24px;
-  box-shadow: 0 4px 16px rgba(11,29,46,.07); }}
+  box-shadow: 0 4px 16px rgba(11,29,46,.07); transition: all 0.25s ease; }}
 .st-key-card_mapa {{ max-height: 100vh; overflow: hidden; position: relative; }}
 .st-key-card_mapa [data-testid="stPlotlyChart"] {{ max-height: calc(100vh - 130px); overflow: hidden; }}
 .st-key-mapa_controles {{ position: absolute; left: 40px; bottom: 40px; z-index: 10; width: auto !important;
   background: rgba(255,255,255,.94); backdrop-filter: blur(6px); border: 1px solid {BORDA};
   border-radius: 12px; padding: 6px; box-shadow: 0 4px 14px rgba(11,29,46,.14); gap: 4px !important; }}
 .st-key-mapa_controles button {{ min-width: 40px; padding: 4px 10px; font-size: 13px; }}
+[class*="st-key-expandir_"] {{ display: flex; justify-content: flex-end; }}
+[class*="st-key-expandir_"] button {{ width: 38px !important; min-width: 38px !important; height: 38px !important;
+  padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; }}
 .card-t {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; color: {TINTA}; display: flex;
   align-items: center; gap: 10px; }}
 .card-s {{ font-size: 14px; color: {CINZA}; margin-top: 2px; }}
@@ -96,7 +99,7 @@ CSS = f"""
   font-weight: 500; text-align: left; padding: 8px 4px; border-bottom: 1px solid {BORDA}; }}
 .rk td {{ padding: 10px 4px; border-bottom: 1px solid {BORDA}; font-size: 16px; color: {TINTA}; }}
 .rk .pos {{ font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: {CINZA}; width: 28px; }}
-.rk .nome {{ font-weight: 500; }}
+.rk .nome {{ font-weight: 400; }}
 .rk .num {{ text-align: right; font-weight: 600; }}
 .rk .barra {{ width: 90px; }}
 .rk .barra div {{ height: 6px; border-radius: 3px; background: {CEU}; overflow: hidden; }}
