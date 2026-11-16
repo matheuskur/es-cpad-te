@@ -261,6 +261,11 @@ with col_rank, st.container(key="card_ranking"):
         )
 
 # ---------- mapa dos bairros (largura total) ----------
+if "mapa_zoom" not in st.session_state:
+    st.session_state["mapa_zoom"] = 9.4
+if "mapa_inclinado" not in st.session_state:
+    st.session_state["mapa_inclinado"] = False
+
 with st.container(key="card_mapa"):
     barra_cores = (
         '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:260px">'
@@ -275,6 +280,7 @@ with st.container(key="card_mapa"):
         f'<div>{card_titulo("Mapa dos bairros", "Cor = % de prédios afetados")}</div>'
         f"{barra_cores}<div></div></div>"
     )
+
     malha = carregar_geojson_bairros()
     if malha is None:
         st.html(
@@ -284,6 +290,8 @@ with st.container(key="card_mapa"):
             "para ver o mapa.</div>"
         )
     else:
+        zoom_atual = st.session_state["mapa_zoom"]
+        inclinado = st.session_state["mapa_inclinado"]
         fig = px.choropleth_map(
             atual,
             geojson=malha,
@@ -294,16 +302,44 @@ with st.container(key="card_mapa"):
             color_continuous_scale=["#E9EEF3", "#BBD7EE", "#6BAED6", "#2F7FBF", "#0A3D62"],
             map_style="carto-positron",
             center={"lat": -30.09, "lon": -51.17},
-            zoom=9.4,
+            zoom=zoom_atual,
             opacity=0.9,
             hover_name="bairro",
             hover_data={"bairro": False, "percentage": True, "affected_population": True},
             labels={"percentage": "% prédios", "affected_population": "Pessoas"},
         )
         fig.update_traces(marker_line_color="#FFFFFF", marker_line_width=0.6)
-        fig.update_layout(coloraxis_showscale=False)
+        fig.update_layout(
+            coloraxis_showscale=False,
+            uirevision=f"{zoom_atual}-{inclinado}",
+            map=dict(
+                pitch=45 if inclinado else 0,
+                bearing=-15 if inclinado else 0,
+            ),
+        )
         estilo_plotly(fig, 740)
         st.plotly_chart(fig, config=PLOTLY_CONFIG, key="mapa")
+
+        with st.container(key="mapa_controles"):
+            if st.button("＋", key="zoom_mais", help="Aproximar", use_container_width=True):
+                st.session_state["mapa_zoom"] = min(14.0, round(st.session_state["mapa_zoom"] + 0.6, 1))
+                st.rerun()
+            if st.button("－", key="zoom_menos", help="Afastar", use_container_width=True):
+                st.session_state["mapa_zoom"] = max(8.0, round(st.session_state["mapa_zoom"] - 0.6, 1))
+                st.rerun()
+            if st.button("↺", key="zoom_reset", help="Resetar visualização", use_container_width=True):
+                st.session_state["mapa_zoom"] = 9.4
+                st.session_state["mapa_inclinado"] = False
+                st.rerun()
+            if st.button(
+                "2D" if inclinado else "3D",
+                key="btn_inclinado",
+                help="Alternar visualização em plano inclinado",
+                use_container_width=True,
+                type="primary" if inclinado else "secondary",
+            ):
+                st.session_state["mapa_inclinado"] = not inclinado
+                st.rerun()
 
 st.html(
     '<div class="rodape">Fonte: INCT SiMAI (vhlab.com.br/INCT/floods) · limpeza: '
