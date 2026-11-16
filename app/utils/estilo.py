@@ -20,12 +20,44 @@ ICONES = {
     "pessoas": '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
     "predios": '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/>',
     "bairros": '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+    "filtro": '<path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>',
     "alerta": '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
 }
 
 CSS = f"""
 <style>
-.block-container {{ max-width: 100%; padding-top: 4.5rem; padding-bottom: 4rem; padding-left: 2rem; padding-right: 2rem; }}
+.block-container {{ max-width: 100%; padding-top: 6.5rem; padding-bottom: 4rem; padding-left: 2rem; padding-right: 2rem; }}
+
+/* ritmo vertical: 24px entre blocos, 12px dentro dos cards */
+.block-container > [data-testid="stVerticalBlock"] {{ gap: 1.5rem; }}
+[class*="st-key-card"] {{ gap: .75rem; }}
+
+/* cards da mesma linha com a mesma altura */
+[data-testid="stColumn"] > [data-testid="stVerticalBlock"] {{ height: 100%; }}
+[data-testid="stColumn"] > [data-testid="stVerticalBlock"] > [data-testid="stLayoutWrapper"]:last-child,
+[data-testid="stColumn"] > [data-testid="stVerticalBlock"] > [data-testid="stElementContainer"]:last-child {{ flex: 1 1 auto; }}
+[data-testid="stLayoutWrapper"] > [class*="st-key-card"] {{ height: 100%; }}
+[data-testid="stHtml"]:has(> .cmp), [data-testid="stHtml"]:has(> .fonte), [data-testid="stHtml"]:has(> .kpi) {{ height: 100%; }}
+.kpi {{ height: 100%; box-sizing: border-box; }}
+[class*="st-key-card"] > [data-testid="stElementContainer"]:has(.mapa-vazio) {{ flex: 1 1 auto; }}
+[data-testid="stHtml"]:has(> .mapa-vazio) {{ height: 100%; }}
+.mapa-vazio {{ height: 100%; min-height: 160px; box-sizing: border-box; display: flex; align-items: center;
+  justify-content: center; border: 1px dashed {BORDA}; border-radius: 12px; padding: 20px; text-align: center;
+  color: {CINZA}; font-size: 13px; line-height: 1.5; background: {FUNDO}; }}
+
+/* barra do topo */
+[data-testid="stHeader"] {{ background: {TINTA}; height: 64px; box-shadow: 0 1px 0 rgba(255,255,255,.06); }}
+[data-testid="stToolbar"] {{ height: 64px; padding: 0 2rem; }}
+[data-testid="stTopNav"] {{ width: 100%; align-items: center; gap: 4px; }}
+[data-testid="stTopNav"]::before {{ content: "≋  Enchentes POA"; font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: 20px; color: #fff; margin-right: auto; white-space: pre; }}
+[data-testid="stTopNavLink"] {{ border-radius: 999px; padding: 6px 16px; background: transparent; }}
+[data-testid="stTopNavLink"] * {{ color: rgba(255,255,255,.72) !important; font-weight: 500; }}
+[data-testid="stTopNavLink"]:hover {{ background: rgba(255,255,255,.08); }}
+[data-testid="stTopNavLink"][aria-current="page"] {{ background: rgba(30,111,168,.55) !important; }}
+[data-testid="stTopNavLink"][aria-current="page"] * {{ color: #fff !important; font-weight: 600; }}
+[data-testid="stMainMenuButton"] svg, [data-testid="stToolbarActions"] svg {{ color: rgba(255,255,255,.75); fill: currentColor; }}
+[data-testid="stDecoration"] {{ display: none; }}
 .eyebrow {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .12em;
   text-transform: uppercase; color: {AZUL}; font-weight: 500; }}
 .titulo {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 44px; line-height: 1.15;
@@ -130,6 +162,40 @@ CSS = f"""
 .rk .pct span {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {AZUL_ESCURO}; background: {CEU};
   border-radius: 999px; padding: 3px 0; display: inline-block; width: 56px; text-align: center; }}
 .rodape {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {CINZA}; margin-top: 8px; }}
+/* ---------- Tela 2 ---------- */
+.st-key-card_filtros {{ padding: 18px 24px; }}
+.filtros-t {{ display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; color: {TINTA}; }}
+.faixas {{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }}
+.faixas div {{ background: {FUNDO}; border-radius: 12px; padding: 10px 12px; }}
+.faixas span {{ font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; white-space: nowrap; color: {CINZA}; display: flex; align-items: center; gap: 6px; }}
+.faixas i {{ width: 9px; height: 9px; border-radius: 50%; display: inline-block; }}
+.faixas b {{ display: block; font-size: 17px; color: {TINTA}; font-weight: 600; }}
+.cmp {{ background: linear-gradient(180deg, {TINTA}, #14507E); border-radius: 16px; padding: 28px; color: #fff;
+  display: flex; flex-direction: column; gap: 20px; height: 100%; box-sizing: border-box; }}
+.cmp-e {{ font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .12em; color: #7FC3F0; }}
+.cmp-t {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; line-height: 1.2; margin: 6px 0 4px; }}
+.cmp-s {{ font-size: 13px; color: rgba(255,255,255,.6); }}
+.cmp-l {{ display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: rgba(255,255,255,.75); }}
+.cmp-l b {{ font-family: 'Fraunces', serif; font-size: 26px; color: #fff; font-weight: 600; }}
+.cmp-bar {{ height: 10px; border-radius: 5px; background: rgba(255,255,255,.12); margin-top: 8px; overflow: hidden; }}
+.cmp-bar span {{ display: block; height: 100%; border-radius: 5px; }}
+.cmp-d {{ margin-top: auto; display: flex; gap: 14px; align-items: center; background: rgba(255,255,255,.07); border-radius: 12px; padding: 14px 16px; }}
+.cmp-d b {{ font-family: 'Fraunces', serif; font-size: 30px; color: #F7A08F; font-weight: 600; white-space: nowrap; }}
+.cmp-d span {{ font-size: 13px; line-height: 1.45; color: rgba(255,255,255,.75); }}
+.mini {{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }}
+.mini div {{ background: {FUNDO}; border-radius: 12px; padding: 12px 14px; }}
+.mini span {{ font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; color: {CINZA}; }}
+.mini b {{ display: block; font-family: 'Fraunces', serif; font-size: 24px; color: {TINTA}; font-weight: 600; }}
+.nota {{ font-size: 12px; color: {CINZA}; line-height: 1.45; margin-top: 12px; }}
+.secao-t {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px; color: {TINTA}; margin-top: 8px; }}
+.fonte {{ background: #fff; border: 1px solid {BORDA}; border-radius: 16px; padding: 22px 24px;
+  box-shadow: 0 4px 16px rgba(11,29,46,.07); display: flex; flex-direction: column; gap: 10px; height: 100%; box-sizing: border-box; }}
+.fonte .tipo {{ align-self: flex-start; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em;
+  padding: 3px 10px; border-radius: 999px; }}
+.fonte .nome {{ font-weight: 600; font-size: 17px; color: {TINTA}; }}
+.fonte .desc {{ font-size: 13px; color: {CINZA}; line-height: 1.45; flex: 1; }}
+.fonte a {{ font-size: 13px; font-weight: 500; color: {AZUL}; word-break: break-all; }}
+.fonte .data {{ font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {CINZA}; border-top: 1px solid {BORDA}; padding-top: 10px; }}
 </style>
 """
 
@@ -159,6 +225,10 @@ def fmt_pct(x: float, casas: int = 1) -> str:
 
 def fmt_m(nivel: float) -> str:
     return f"{nivel:.1f} m".replace(".", ",")
+
+
+def fmt_reais(x: float) -> str:
+    return "R$ " + fmt_int(x)
 
 
 def cor_faixa(p: float) -> str:
