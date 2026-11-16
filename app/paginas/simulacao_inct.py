@@ -44,7 +44,145 @@ serie = serie_cidade(df)
 
 if "nivel" not in st.session_state:
     st.session_state["nivel"] = 5.3
-nivel = round(st.session_state["nivel"], 1)
+
+
+@st.cache_resource
+def _registrar_slider_vivo():
+    return st.components.v2.component(
+        "slider_nivel_guaiba",
+        html="""
+        <div class="sv-wrap">
+          <div class="sv-track-area">
+            <div class="sv-badge" id="sv-badge"></div>
+            <div class="sv-recorde" id="sv-recorde" title="Recorde maio/2024: 5,35 m"></div>
+            <input type="range" class="sv-range" id="sv-range" />
+          </div>
+          <div class="sv-limits">
+            <span id="sv-min"></span>
+            <span id="sv-max"></span>
+          </div>
+        </div>
+        """,
+        css="""
+        .sv-wrap { padding: 28px 4px 4px; font-family: 'IBM Plex Mono', monospace; user-select: none; }
+        .sv-track-area { position: relative; height: 22px; display: flex; align-items: center; }
+        .sv-range {
+          -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+          border-radius: 999px; background: rgba(255,255,255,0.22); outline: none;
+          margin: 0; position: relative; z-index: 2; cursor: pointer;
+        }
+        .sv-range::-webkit-slider-thumb {
+          -webkit-appearance: none; appearance: none; width: 18px; height: 18px;
+          border-radius: 50%; background: var(--thumb-cor, #6BAED6); border: 2px solid #fff;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.35); cursor: grab;
+        }
+        .sv-range::-moz-range-thumb {
+          width: 18px; height: 18px; border-radius: 50%; background: var(--thumb-cor, #6BAED6);
+          border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.35); cursor: grab;
+        }
+        .sv-badge {
+          position: absolute; top: -26px; transform: translateX(-50%);
+          background: rgba(11,29,46,0.92); color: #fff; font-size: 13px;
+          font-weight: 600; padding: 2px 8px; border-radius: 6px;
+          white-space: nowrap; pointer-events: none; z-index: 3;
+        }
+        .sv-recorde {
+          position: absolute; top: 50%; transform: translate(-50%, -50%);
+          width: 3px; height: 18px; background: #E0533D; border-radius: 2px;
+          pointer-events: none; z-index: 3;
+        }
+        .sv-limits {
+          display: flex; justify-content: space-between; font-size: 12px;
+          color: rgba(255,255,255,0.75); margin-top: 6px;
+        }
+        """,
+        js="""
+        export default function(component) {
+          const { parentElement, data, setStateValue } = component;
+          const range = parentElement.querySelector("#sv-range");
+          const badge = parentElement.querySelector("#sv-badge");
+          const rec = parentElement.querySelector("#sv-recorde");
+          const minEl = parentElement.querySelector("#sv-min");
+          const maxEl = parentElement.querySelector("#sv-max");
+
+          const min = Number(data.min);
+          const max = Number(data.max);
+          const step = Number(data.step);
+          const recorde = Number(data.recorde);
+
+          range.min = min;
+          range.max = max;
+          range.step = step;
+          minEl.textContent = min.toFixed(1).replace(".", ",") + " m";
+          maxEl.textContent = max.toFixed(1).replace(".", ",") + " m";
+          const posThumb = (p) => `calc(${p}% + ${9 - p * 0.18}px)`;
+          const recPct = ((recorde - min) / (max - min)) * 100;
+          const recPos = posThumb(recPct);
+          rec.style.left = recPos;
+
+          const fmt = (v) => Number(v).toFixed(1).replace(".", ",") + " m";
+          const syncUI = (v) => {
+            const pct = ((v - min) / (max - min)) * 100;
+            const pos = posThumb(pct);
+            badge.textContent = fmt(v);
+            badge.style.left = pos;
+            if (pct <= recPct) {
+              range.style.setProperty("--thumb-cor", "#6BAED6");
+              range.style.background = `linear-gradient(90deg, #6BAED6 0%, #6BAED6 ${pos}, rgba(255,255,255,0.22) ${pos})`;
+            } else {
+              range.style.setProperty("--thumb-cor", "#F08C3A");
+              range.style.background = `linear-gradient(90deg, #6BAED6 0%, #6BAED6 ${recPos}, #F08C3A ${recPos}, #F08C3A ${pos}, rgba(255,255,255,0.22) ${pos})`;
+            }
+          };
+
+          if (!range.dataset.bound) {
+            range.dataset.bound = "1";
+            range._dragging = false;
+            range._lastSent = null;
+            range._timer = null;
+
+            const enviar = (v) => {
+              const num = Math.round(Number(v) * 10) / 10;
+              if (num === range._lastSent) return;
+              range._lastSent = num;
+              setStateValue("nivel", num);
+            };
+
+            range.addEventListener("pointerdown", () => { range._dragging = true; });
+            window.addEventListener("pointerup", () => { range._dragging = false; });
+
+            range.addEventListener("input", () => {
+              const v = Number(range.value);
+              syncUI(v);
+              if (!range._timer) {
+                range._timer = setTimeout(() => {
+                  range._timer = null;
+                  enviar(range.value);
+                }, 200);
+              }
+            });
+
+            range.addEventListener("change", () => {
+              range._dragging = false;
+              if (range._timer) {
+                clearTimeout(range._timer);
+                range._timer = null;
+              }
+              enviar(range.value);
+            });
+          }
+
+          if (!range._dragging) {
+            range.value = data.value;
+            syncUI(Number(data.value));
+          }
+        }
+        """,
+    )
+
+
+slider_vivo = _registrar_slider_vivo()
+nivel = round(float(st.session_state["nivel"]), 1)
 
 # ---------- dados do nível escolhido ----------
 atual = recorte_nivel(df, nivel)
@@ -55,13 +193,14 @@ total_predios = atual["total_buildings"].sum()
 atingidos = atual[atual["affected_buildings"] > 0]
 n_bairros = atual["bairro"].nunique()
 
-# ---------- cabeçalho ----------
+# ---------- aviso de limitações ----------
 st.html(
-    '<div class="eyebrow">Porto Alegre · simulação INCT SiMAI</div>'
-    f'<div class="titulo">Se o Guaíba chegar a {fmt_m(nivel)}</div>'
-    '<div class="sub">Impacto estimado em pessoas, prédios e bairros para cada nível do rio entre '
-    "3,0 m e 10,0 m. Fonte: JSON do INCT SiMAI, limpo pela equipe "
-    f"({df['nivel_m'].nunique()} níveis × {n_bairros} bairros).</div>"
+    f'<div class="aviso">{icone("alerta", "#8A5A12")}<div><b>Limitações dos dados</b>'
+    "A simulação cruza a cota do Guaíba com a mancha de inundação e não considera diques, comportas, "
+    "casas de bombas, chuva local nem duração da cheia. A fonte arredonda o percentual de prédios para "
+    "cima, o que superestima a população afetada (até ~500 pessoas por bairro e nível). Acima de 5,35 m "
+    "(recorde de maio/2024), as informações são estimativas, não dados reais. Leia os números como ordem "
+    "de grandeza, não como previsão.</div></div>"
 )
 
 # ---------- controle do nível ----------
@@ -76,7 +215,38 @@ inteiro, decimal = f"{nivel:.1f}".split(".")
 cota_txt = f"{COTA_INUNDACAO:.2f}".replace(".", ",")
 
 with st.container(key="hero"):
-    st.html(
+    hero_top_slot = st.empty()
+    res_slider = slider_vivo(
+        key="slider_nivel",
+        data={
+            "min": NIVEL_MIN,
+            "max": NIVEL_MAX,
+            "step": NIVEL_PASSO,
+            "value": nivel,
+            "recorde": NIVEL_RECORDE_2024,
+        },
+        default={"nivel": nivel},
+        on_nivel_change=lambda: None,
+    )
+    if res_slider.nivel is not None and round(float(res_slider.nivel), 1) != nivel:
+        nivel = round(float(res_slider.nivel), 1)
+        st.session_state["nivel"] = nivel
+        atual = recorte_nivel(df, nivel)
+        pessoas = atual["affected_population"].sum()
+        populacao = atual["population"].sum()
+        predios = atual["affected_buildings"].sum()
+        total_predios = atual["total_buildings"].sum()
+        atingidos = atual[atual["affected_buildings"] > 0]
+        dif_cm = round((NIVEL_RECORDE_2024 - nivel) * 100)
+        if dif_cm > 0:
+            relacao = f"{dif_cm} cm abaixo do recorde de maio de 2024"
+        elif dif_cm < 0:
+            relacao = f"{-dif_cm} cm acima do recorde de maio de 2024"
+        else:
+            relacao = "igual ao recorde de maio de 2024"
+        inteiro, decimal = f"{nivel:.1f}".split(".")
+
+    hero_top_slot.html(
         '<div class="hero-top"><div>'
         '<div class="hero-eyebrow">NÍVEL DO GUAÍBA</div>'
         f'<div class="hero-valor">{inteiro},{decimal}<small>m</small></div>'
@@ -85,15 +255,6 @@ with st.container(key="hero"):
         f'<span class="chip"><i style="background:{AMBAR}"></i>Cota de inundação · {cota_txt} m</span>'
         f'<span class="chip"><i style="background:{CORAL}"></i>Recorde mai/2024 · 5,35 m</span>'
         "</div></div>"
-    )
-    st.slider(
-        "Nível do Guaíba (m)",
-        min_value=NIVEL_MIN,
-        max_value=NIVEL_MAX,
-        step=NIVEL_PASSO,
-        format="%.1f m",
-        key="nivel",
-        label_visibility="collapsed",
     )
     st.html(
         '<div class="hero-dica">Arraste para escolher o nível (passo de 0,1 m). '
@@ -117,15 +278,6 @@ for coluna, (ic, rotulo, valor, fracao, detalhe) in zip(st.columns(3, gap="mediu
         f'<div class="kpi-bar"><span style="width:{100 * fracao:.1f}%"></span></div>'
         f'<div class="kpi-d">{detalhe}</div></div>'
     )
-
-# ---------- aviso de limitações ----------
-st.html(
-    f'<div class="aviso">{icone("alerta", "#8A5A12")}<div><b>Limitações dos dados</b>'
-    "A simulação cruza a cota do Guaíba com a mancha de inundação e não considera diques, comportas, "
-    "casas de bombas, chuva local nem duração da cheia. A fonte arredonda o percentual de prédios para "
-    "cima, o que superestima a população afetada (até ~500 pessoas por bairro e nível). Leia os números "
-    "como ordem de grandeza, não como previsão.</div></div>"
-)
 
 for k_exp in ("exp_curva", "exp_barras", "exp_mapa"):
     if k_exp not in st.session_state:

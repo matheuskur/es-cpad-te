@@ -36,7 +36,29 @@ CSS = f"""
 .st-key-hero {{ background: linear-gradient(90deg, {TINTA}, #14507E); border-radius: 20px;
   padding: 28px 32px 18px; gap: .4rem; }}
 .st-key-hero [data-testid="stSlider"] * {{ color: rgba(255,255,255,.75); }}
-.st-key-hero [data-testid="stSliderThumbValue"] {{ display: none; }}  /* o valor já aparece grande acima */
+.st-key-hero [data-testid="stSliderThumbValue"] {{
+  color: #fff !important;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(11,29,46,.85);
+  padding: 2px 7px;
+  border-radius: 6px;
+}}
+.st-key-hero [data-baseweb="slider"] > div:first-child {{ position: relative; }}
+.st-key-hero [data-baseweb="slider"] > div:first-child::after {{
+  content: "";
+  position: absolute;
+  left: 33.5714%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 18px;
+  background: {CORAL};
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+}}
 .aviso img {{ flex-shrink: 0; margin-top: 2px; }}
 .hero-top {{ display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }}
 .hero-eyebrow {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .12em; color: rgba(255,255,255,.6); }}
