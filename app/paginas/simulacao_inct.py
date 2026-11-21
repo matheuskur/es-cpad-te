@@ -47,9 +47,9 @@ if "nivel" not in st.session_state:
 
 
 @st.cache_resource
-def _registrar_slider_vivo():
+def _registrar_slider_nivel():
     return st.components.v2.component(
-        "slider_nivel_guaiba",
+        "slider_nivel_guaiba_soltar",
         html="""
         <div class="sv-wrap">
           <div class="sv-track-area">
@@ -135,63 +135,48 @@ def _registrar_slider_vivo():
             }
           };
 
+          range._setState = setStateValue;
+          range._syncUI = syncUI;
+
           if (!range.dataset.bound) {
             range.dataset.bound = "1";
             range._dragging = false;
-            range._lastSent = null;
-            range._timer = null;
-
-            const enviar = (v) => {
-              const num = Math.round(Number(v) * 10) / 10;
-              if (num === range._lastSent) return;
-              range._lastSent = num;
-              setStateValue("nivel", num);
-            };
+            range._lastSent = Math.round(Number(data.value) * 10) / 10;
 
             range.addEventListener("pointerdown", () => { range._dragging = true; });
             window.addEventListener("pointerup", () => { range._dragging = false; });
 
             range.addEventListener("input", () => {
-              const v = Number(range.value);
-              syncUI(v);
-              if (!range._timer) {
-                range._timer = setTimeout(() => {
-                  range._timer = null;
-                  enviar(range.value);
-                }, 200);
-              }
+              range._syncUI(Number(range.value));
             });
 
             range.addEventListener("change", () => {
               range._dragging = false;
-              if (range._timer) {
-                clearTimeout(range._timer);
-                range._timer = null;
+              const num = Math.round(Number(range.value) * 10) / 10;
+              range._syncUI(num);
+              if (num !== range._lastSent) {
+                range._lastSent = num;
+                range._setState("nivel", num);
               }
-              enviar(range.value);
             });
           }
 
           if (!range._dragging) {
-            range.value = data.value;
-            syncUI(Number(data.value));
+            const val = Math.round(Number(data.value) * 10) / 10;
+            range.value = val;
+            range._lastSent = val;
+            syncUI(val);
           }
         }
         """,
     )
 
 
-slider_vivo = _registrar_slider_vivo()
+slider_nivel = _registrar_slider_nivel()
+_estado_slider = st.session_state.get("slider_nivel_soltar")
+if _estado_slider and _estado_slider.get("nivel") is not None:
+    st.session_state["nivel"] = round(float(_estado_slider["nivel"]), 1)
 nivel = round(float(st.session_state["nivel"]), 1)
-
-# ---------- dados do nível escolhido ----------
-atual = recorte_nivel(df, nivel)
-pessoas = atual["affected_population"].sum()
-populacao = atual["population"].sum()
-predios = atual["affected_buildings"].sum()
-total_predios = atual["total_buildings"].sum()
-atingidos = atual[atual["affected_buildings"] > 0]
-n_bairros = atual["bairro"].nunique()
 
 # ---------- aviso de limitações ----------
 st.html(
@@ -204,20 +189,12 @@ st.html(
 )
 
 # ---------- controle do nível ----------
-dif_cm = round((NIVEL_RECORDE_2024 - nivel) * 100)
-if dif_cm > 0:
-    relacao = f"{dif_cm} cm abaixo do recorde de maio de 2024"
-elif dif_cm < 0:
-    relacao = f"{-dif_cm} cm acima do recorde de maio de 2024"
-else:
-    relacao = "igual ao recorde de maio de 2024"
-inteiro, decimal = f"{nivel:.1f}".split(".")
 cota_txt = f"{COTA_INUNDACAO:.2f}".replace(".", ",")
 
 with st.container(key="hero"):
     hero_top_slot = st.empty()
-    res_slider = slider_vivo(
-        key="slider_nivel",
+    res_slider = slider_nivel(
+        key="slider_nivel_soltar",
         data={
             "min": NIVEL_MIN,
             "max": NIVEL_MAX,
@@ -231,20 +208,15 @@ with st.container(key="hero"):
     if res_slider.nivel is not None and round(float(res_slider.nivel), 1) != nivel:
         nivel = round(float(res_slider.nivel), 1)
         st.session_state["nivel"] = nivel
-        atual = recorte_nivel(df, nivel)
-        pessoas = atual["affected_population"].sum()
-        populacao = atual["population"].sum()
-        predios = atual["affected_buildings"].sum()
-        total_predios = atual["total_buildings"].sum()
-        atingidos = atual[atual["affected_buildings"] > 0]
-        dif_cm = round((NIVEL_RECORDE_2024 - nivel) * 100)
-        if dif_cm > 0:
-            relacao = f"{dif_cm} cm abaixo do recorde de maio de 2024"
-        elif dif_cm < 0:
-            relacao = f"{-dif_cm} cm acima do recorde de maio de 2024"
-        else:
-            relacao = "igual ao recorde de maio de 2024"
-        inteiro, decimal = f"{nivel:.1f}".split(".")
+
+    dif_cm = round((NIVEL_RECORDE_2024 - nivel) * 100)
+    if dif_cm > 0:
+        relacao = f"{dif_cm} cm abaixo do recorde de maio de 2024"
+    elif dif_cm < 0:
+        relacao = f"{-dif_cm} cm acima do recorde de maio de 2024"
+    else:
+        relacao = "igual ao recorde de maio de 2024"
+    inteiro, decimal = f"{nivel:.1f}".split(".")
 
     hero_top_slot.html(
         '<div class="hero-top"><div>'
@@ -256,10 +228,16 @@ with st.container(key="hero"):
         f'<span class="chip"><i style="background:{CORAL}"></i>Recorde mai/2024 · 5,35 m</span>'
         "</div></div>"
     )
-    st.html(
-        '<div class="hero-dica">Arraste para escolher o nível (passo de 0,1 m). '
-        "Indicadores, gráficos e ranking abaixo se atualizam juntos.</div>"
-    )
+    st.html('<div class="hero-dica">Arraste para escolher o nível (passo de 0,1 m).</div>')
+
+# ---------- dados do nível escolhido ----------
+atual = recorte_nivel(df, nivel)
+pessoas = atual["affected_population"].sum()
+populacao = atual["population"].sum()
+predios = atual["affected_buildings"].sum()
+total_predios = atual["total_buildings"].sum()
+atingidos = atual[atual["affected_buildings"] > 0]
+n_bairros = atual["bairro"].nunique()
 
 # ---------- indicadores ----------
 milhoes = f"{populacao / 1e6:.2f}".replace(".", ",")

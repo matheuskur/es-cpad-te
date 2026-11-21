@@ -52,7 +52,7 @@ CSS = f"""
 [data-testid="stHeader"] {{ background: {TINTA}; height: 64px; box-shadow: 0 1px 0 rgba(255,255,255,.06); }}
 [data-testid="stToolbar"] {{ height: 64px; padding: 0 2rem; }}
 [data-testid="stTopNav"] {{ width: 100%; align-items: center; gap: 4px; }}
-[data-testid="stTopNav"]::before {{ content: "≋  Enchentes POA"; font-family: 'Fraunces', serif; font-weight: 600;
+[data-testid="stTopNav"]::before {{ content: "Enchentes POA"; font-family: 'Fraunces', serif; font-weight: 600;
   font-size: 20px; color: #fff; margin-right: auto; white-space: pre; }}
 [data-testid="stTopNavLink"] {{ border-radius: 999px; padding: 6px 16px; background: transparent; }}
 [data-testid="stTopNavLink"] * {{ color: rgba(255,255,255,.72) !important; font-weight: 500; }}
