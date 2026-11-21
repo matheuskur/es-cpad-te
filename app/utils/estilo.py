@@ -20,6 +20,9 @@ ICONES = {
     "pessoas": '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
     "predios": '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/>',
     "bairros": '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+    "area": '<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>',
+    "saude": '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 7v6"/><path d="M9 10h6"/>',
+    "ensino": '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
     "filtro": '<path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>',
     "alerta": '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
 }
@@ -107,12 +110,13 @@ CSS = f"""
 /* cards */
 [class*="st-key-card"] {{ background: #fff; border: 1px solid {BORDA}; border-radius: 16px; padding: 24px;
   box-shadow: 0 4px 16px rgba(11,29,46,.07); transition: all 0.25s ease; }}
-.st-key-card_mapa {{ max-height: 100vh; overflow: hidden; position: relative; }}
-.st-key-card_mapa [data-testid="stPlotlyChart"] {{ max-height: calc(100vh - 130px); overflow: hidden; }}
-.st-key-mapa_controles {{ position: absolute; left: 40px; bottom: 40px; z-index: 10; width: auto !important;
+.st-key-card_mapa, .st-key-card_mapa_renda {{ max-height: 100vh; overflow: hidden; position: relative; }}
+.st-key-card_mapa [data-testid="stPlotlyChart"],
+.st-key-card_mapa_renda [data-testid="stPlotlyChart"] {{ max-height: calc(100vh - 130px); overflow: hidden; }}
+.st-key-mapa_controles, .st-key-mapa_controles_renda {{ position: absolute; left: 40px; bottom: 40px; z-index: 10; width: auto !important;
   background: rgba(255,255,255,.94); backdrop-filter: blur(6px); border: 1px solid {BORDA};
   border-radius: 12px; padding: 6px; box-shadow: 0 4px 14px rgba(11,29,46,.14); gap: 4px !important; }}
-.st-key-mapa_controles button {{ min-width: 40px; padding: 4px 10px; font-size: 13px; }}
+.st-key-mapa_controles button, .st-key-mapa_controles_renda button {{ min-width: 40px; padding: 4px 10px; font-size: 13px; }}
 [class*="st-key-expandir_"] {{ display: flex; justify-content: flex-end; }}
 [class*="st-key-expandir_"] button {{ width: 38px !important; min-width: 38px !important; height: 38px !important;
   padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; }}
@@ -163,6 +167,19 @@ CSS = f"""
   border-radius: 999px; padding: 3px 0; display: inline-block; width: 56px; text-align: center; }}
 .rodape {{ font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {CINZA}; margin-top: 8px; }}
 /* ---------- Tela 2 ---------- */
+.st-key-hero_t2 {{ background: linear-gradient(90deg, {TINTA}, #14507E); border-radius: 20px;
+  padding: 28px 32px 18px; gap: .5rem; }}
+.st-key-hero_t2 [data-testid="stSlider"] * {{ color: rgba(255,255,255,.78); }}
+.st-key-hero_t2 [data-testid="stSliderThumbValue"] {{
+  color: #fff !important;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(11,29,46,.85);
+  padding: 2px 8px;
+  border-radius: 6px;
+}}
+.st-key-hero_t2 .hero-valor-t2 {{ font-family: 'Fraunces', serif; font-weight: 600; font-size: 56px; line-height: 1.05; color: #fff; margin-top: 4px; }}
 .st-key-card_filtros {{ padding: 18px 24px; }}
 .filtros-t {{ display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; color: {TINTA}; }}
 .faixas {{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }}
