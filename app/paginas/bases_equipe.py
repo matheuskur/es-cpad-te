@@ -273,13 +273,14 @@ def criar_barras_pct_area(
             ),
         )
     )
-    fig.update_layout(barcornerradius=6, bargap=0.42)
+    fig.update_layout(barcornerradius=6, bargap=0.42, dragmode=False)
     max_x = max(float(valores.max()) * 1.18, 25.0) if not valores.empty else 100.0
-    fig.update_xaxes(range=[0, min(max_x, 118.0)], visible=False)
+    fig.update_xaxes(range=[0, min(max_x, 118.0)], visible=False, fixedrange=True)
     fig.update_yaxes(
         autorange="reversed",
         ticksuffix="  ",
         showgrid=False,
+        fixedrange=True,
         tickfont=dict(family="IBM Plex Sans, sans-serif", size=fonte - 1, color=TINTA),
     )
     estilo_plotly(fig, max(altura_min, passo_barra * len(ordem) + 20))
@@ -353,12 +354,48 @@ def criar_dispersao_area_pop(df_mun: pd.DataFrame, modo: str, altura: int, fonte
             font=dict(size=max(fonte - 3, 11), color=CORAL if r.cd_mun == COD_POA else TINTA),
         )
 
+    max_x = max(float(df_mun[x_col].max()), 1.0)
+    max_y = max(float(df_mun[y_col].max()), 1.0)
     if modo == "Absoluto":
-        fig.update_xaxes(title=x_title, rangemode="tozero", gridcolor=BORDA, griddash="dot", tickformat=",.0f")
-        fig.update_yaxes(title=y_title, rangemode="tozero", gridcolor=BORDA, griddash="dot", tickformat=",.0f")
+        fig.update_xaxes(
+            title=x_title,
+            range=[0, max_x * 1.08],
+            minallowed=0,
+            maxallowed=max_x * 1.08,
+            gridcolor=BORDA,
+            griddash="dot",
+            tickformat=",.0f",
+        )
+        fig.update_yaxes(
+            title=y_title,
+            range=[0, max_y * 1.08],
+            minallowed=0,
+            maxallowed=max_y * 1.08,
+            gridcolor=BORDA,
+            griddash="dot",
+            tickformat=",.0f",
+        )
     else:
-        fig.update_xaxes(title=x_title, rangemode="tozero", ticksuffix="%", gridcolor=BORDA, griddash="dot")
-        fig.update_yaxes(title=y_title, rangemode="tozero", ticksuffix="%", gridcolor=BORDA, griddash="dot")
+        lim_x = min(100.0, max(max_x * 1.08, 10.0))
+        lim_y = min(100.0, max(max_y * 1.08, 10.0))
+        fig.update_xaxes(
+            title=x_title,
+            range=[0, lim_x],
+            minallowed=0,
+            maxallowed=lim_x,
+            ticksuffix="%",
+            gridcolor=BORDA,
+            griddash="dot",
+        )
+        fig.update_yaxes(
+            title=y_title,
+            range=[0, lim_y],
+            minallowed=0,
+            maxallowed=lim_y,
+            ticksuffix="%",
+            gridcolor=BORDA,
+            griddash="dot",
+        )
 
     estilo_plotly(fig, altura)
     fig.update_layout(font=dict(size=fonte), margin=dict(l=0, r=12, t=12, b=0))
@@ -404,13 +441,14 @@ def criar_barras_equipamentos(
             hovertemplate=hover,
         )
     )
-    fig.update_layout(barcornerradius=6, bargap=0.42)
+    fig.update_layout(barcornerradius=6, bargap=0.42, dragmode=False)
     max_x = float(valores.max()) * 1.24 if not valores.empty and float(valores.max()) > 0 else 10.0
-    fig.update_xaxes(range=[0, max_x], visible=False)
+    fig.update_xaxes(range=[0, max_x], visible=False, fixedrange=True)
     fig.update_yaxes(
         autorange="reversed",
         ticksuffix="  ",
         showgrid=False,
+        fixedrange=True,
         tickfont=dict(family="IBM Plex Sans, sans-serif", size=fonte - 1, color=TINTA),
     )
     estilo_plotly(fig, max(altura_min, passo_barra * len(ordem) + 20))
@@ -845,6 +883,7 @@ with st.container(key="card_dispersao"):
                     y=parte["pct_pop"],
                     mode="markers",
                     name=rot,
+                    cliponaxis=False,
                     marker=dict(size=tamanhos_b, color=CORES_FAIXA[i], opacity=0.85, line=dict(color="#FFFFFF", width=1.5)),
                     customdata=parte[["bairro", "affected_population", "population"]],
                     hovertemplate=(
@@ -854,8 +893,25 @@ with st.container(key="card_dispersao"):
                     ),
                 )
             )
-        fig_disp.update_xaxes(tickprefix="R$ ", tickformat=",.0f", showgrid=False, title=None)
-        fig_disp.update_yaxes(range=[-4, 104], ticksuffix="%", gridcolor=BORDA, griddash="dot", title=None)
+        max_renda = max(float(sel["renda_media_total"].max()) * 1.04, 1.0)
+        fig_disp.update_xaxes(
+            tickprefix="R$ ",
+            tickformat=",.0f",
+            range=[0, max_renda],
+            minallowed=0,
+            maxallowed=max_renda,
+            showgrid=False,
+            title=None,
+        )
+        fig_disp.update_yaxes(
+            range=[0, 100],
+            minallowed=0,
+            maxallowed=100,
+            ticksuffix="%",
+            gridcolor=BORDA,
+            griddash="dot",
+            title=None,
+        )
         estilo_plotly(fig_disp, 560 if exp_dispersao else 380)
         fig_disp.update_layout(font=dict(size=16 if exp_dispersao else 14))
         st.plotly_chart(fig_disp, config=PLOTLY_CONFIG, key="dispersao")

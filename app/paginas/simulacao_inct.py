@@ -309,10 +309,25 @@ def criar_figura_curva(altura: int, fonte: int = 14) -> go.Figure:
         yanchor="top", yshift=-8, font=dict(color="#FFFFFF", size=fonte),
         text=f"<span style='font-size:{fonte - 2}px'>{fmt_m(nivel)}</span><br><b>{fmt_int(y_atual)} pessoas</b>",
     )
-    fig.update_xaxes(range=[NIVEL_MIN - 0.05, NIVEL_MAX + 0.1], dtick=1, ticksuffix=" m", showgrid=False,
-                     tickfont=dict(family="IBM Plex Mono, monospace", size=fonte - 2, color=CINZA))
-    fig.update_yaxes(rangemode="tozero", gridcolor=BORDA, griddash="dot", tickformat=",.0f",
-                     tickfont=dict(family="IBM Plex Mono, monospace", size=fonte - 2, color=CINZA))
+    max_pessoas = float(serie["pessoas"].max()) * 1.1
+    fig.update_xaxes(
+        range=[NIVEL_MIN - 0.05, NIVEL_MAX + 0.1],
+        minallowed=NIVEL_MIN - 0.05,
+        maxallowed=NIVEL_MAX + 0.1,
+        dtick=1,
+        ticksuffix=" m",
+        showgrid=False,
+        tickfont=dict(family="IBM Plex Mono, monospace", size=fonte - 2, color=CINZA),
+    )
+    fig.update_yaxes(
+        rangemode="tozero",
+        minallowed=0,
+        maxallowed=max_pessoas,
+        gridcolor=BORDA,
+        griddash="dot",
+        tickformat=",.0f",
+        tickfont=dict(family="IBM Plex Mono, monospace", size=fonte - 2, color=CINZA),
+    )
     estilo_plotly(fig, altura)
     fig.update_layout(font=dict(size=fonte))
     return fig
@@ -336,12 +351,13 @@ def criar_figura_barras(
             "%{customdata[0]:,.0f} de %{customdata[1]:,.0f}<extra></extra>",
         )
     )
-    fig.update_layout(barcornerradius=6, bargap=0.45)
-    fig.update_xaxes(range=[0, 112], visible=False)
+    fig.update_layout(barcornerradius=6, bargap=0.45, dragmode=False)
+    fig.update_xaxes(range=[0, 112], visible=False, fixedrange=True)
     fig.update_yaxes(
         autorange="reversed",
         ticksuffix="  ",
         showgrid=False,
+        fixedrange=True,
         tickfont=dict(family="IBM Plex Sans, sans-serif", size=fonte - 1, color=TINTA),
     )
     estilo_plotly(fig, max(altura_min, passo_barra * len(ordem) + 20))
