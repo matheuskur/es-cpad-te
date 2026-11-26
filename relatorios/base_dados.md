@@ -2,6 +2,8 @@
 
 Data: 08/11/2026
 
+Repositório: https://github.com/matheuskur/es-cpad-te
+
 Este relatório descreve as bases escolhidas para o projeto, o que cada uma contém, como elas se conectam e o que ainda está pendente. As contagens foram feitas diretamente nos arquivos em `dados/originais/`.
 
 ## 1. Objetivo do levantamento
