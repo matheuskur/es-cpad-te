@@ -2,6 +2,8 @@
 
 Projeto extensionista da disciplina Coleta, Preparação e Análise de Dados (PUCRS).
 
+Repositório: https://github.com/matheuskur/es-cpad-te
+
 ## Equipe
 
 | Nome | GitHub |
@@ -13,42 +15,65 @@ Projeto extensionista da disciplina Coleta, Preparação e Análise de Dados (PU
 ## Dashboard
 
 - Link público: _a definir_
+- Relatório do dashboard: `relatorios/dashboard.pdf`
 
-Para rodar localmente (com o ambiente ativado, a partir da raiz do projeto):
+## Como rodar o projeto
 
-```bash
-streamlit run app/app.py
-```
+Todos os comandos são executados a partir da raiz do projeto. É preciso ter Python 3.11 ou mais recente e acesso à internet (para o download dos agregados do IBGE e para o fundo dos mapas).
 
-O app abre em http://localhost:8501. O menu fica no topo e é definido em `app/app.py` (`st.navigation`), as telas ficam em `app/paginas/` (Tela 1: simulação do INCT; Tela 2: bases da equipe), a leitura dos dados processados em `app/utils/dados.py` e o tema em `.streamlit/config.toml`.
+1. Clonar o repositório:
 
-## Como rodar
+   ```bash
+   git clone https://github.com/matheuskur/es-cpad-te.git
+   cd es-cpad-te
+   ```
 
-1. Criar e ativar o ambiente virtual:
+2. Criar e ativar o ambiente virtual:
 
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate        # Windows: .venv\Scripts\activate
    ```
 
-2. Instalar as dependências:
+3. Instalar as dependências:
 
    ```bash
    pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
-3. Registrar o kernel do Jupyter (para os notebooks de EDA):
+4. Preparar os dados (do original ao processado):
+
+   ```bash
+   python scripts/preparar_dados.py
+   ```
+
+   O script roda, em ordem, a limpeza do INCT, a limpeza do IBGE (baixa o ZIP de agregados, cerca de 15 MB, se ainda não existir), a limpeza do Zenodo e a geração da malha dos bairros. Ele para no primeiro erro e leva cerca de 20 segundos, mais o tempo do download na primeira vez. Os dados processados já estão versionados em `dados/processados/`, então este passo serve para reproduzir o processamento; rodá-lo gera arquivos idênticos aos do repositório. Cada etapa está descrita em [Preparação dos dados](#preparação-dos-dados).
+
+5. Abrir o dashboard:
+
+   ```bash
+   streamlit run app/app.py
+   ```
+
+   O app abre em http://localhost:8501. Ele só lê os arquivos de `dados/processados/` e não executa os scripts de coleta e limpeza.
+
+6. Notebooks de EDA (opcional):
 
    ```bash
    python -m ipykernel install --user --name=projeto-enchentes
-   ```
-
-4. Iniciar o Jupyter Notebook (opcional):
-
-   ```bash
    jupyter notebook
    ```
+
+   Os notebooks ficam em `notebooks/exploracao/` (ver [Notebooks de exploração](#notebooks-de-exploração)).
+
+### Organização do app
+
+O menu fica no topo e é definido em `app/app.py` (`st.navigation`). As telas ficam em `app/paginas/` (`simulacao_inct.py` é a Tela 1 e `bases_equipe.py` é a Tela 2), a leitura dos dados processados em `app/utils/dados.py`, cores e componentes visuais em `app/utils/estilo.py` e o tema em `.streamlit/config.toml`.
+
+## Preparação dos dados
+
+O `scripts/preparar_dados.py` roda os quatro scripts abaixo, nesta ordem. Eles também podem ser rodados um a um.
 
 ### Limpeza dos dados do INCT
 
@@ -76,15 +101,15 @@ python scripts/limpeza_zenodo.py
 
 O script limpa e padroniza `dados/originais/zenodo/analise_ada_rhguaiba_municipios.csv`, corrigindo tipos numéricos, cabeçalhos e pontos de milhar, gerando o arquivo tratado em `dados/processados/zenodo/analise_ada_rhguaiba_municipios.csv`. As regras estão descritas em `relatorios/limpeza_dados.md`, seção 6.
 
-### Malha dos bairros (mapa da Tela 1, opcional)
+### Malha dos bairros (mapas das Telas 1 e 2)
 
 ```bash
 python scripts/malha_bairros.py
 ```
 
-O script baixa a malha de bairros do Censo 2022 do IBGE, filtra Porto Alegre, liga cada polígono ao nome do bairro do INCT pelo `cd_bairro_ibge` de `dados/processados/IBGE/bairros_poa.csv` e salva `dados/processados/geo/bairros_poa.geojson`. Sem esse arquivo, a Tela 1 mostra um aviso no lugar do mapa. Se o download falhar, baixe o `.zip` da malha no site do IBGE e passe o caminho: `python scripts/malha_bairros.py caminho/arquivo.zip`.
+O script baixa a malha de bairros do Censo 2022 do IBGE, filtra Porto Alegre, liga cada polígono ao nome do bairro do INCT pelo `cd_bairro_ibge` de `dados/processados/IBGE/bairros_poa.csv` e salva `dados/processados/geo/bairros_poa.geojson`. Sem esse arquivo, as duas telas mostram um aviso no lugar dos mapas. Se o download falhar, baixe o `.zip` da malha no site do IBGE e passe o caminho: `python scripts/malha_bairros.py caminho/arquivo.zip`.
 
-### Notebooks de exploração
+## Notebooks de exploração
 
 Em `notebooks/exploracao/`:
 - `exploracao_inct.ipynb` e `exploracao_dados_processados.ipynb`: parte textual e numérica (formato, estrutura e primeiras linhas).
@@ -107,18 +132,24 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 │   ├── originais/        # dados como vieram, separados por fonte
 │   │   ├── INCT/         # dados do INCT SiMAI
 │   │   ├── IBGE/         # tabelas e composições do Censo 2022
-│   │   └── zenodo/       # impacto da enchente de maio/2024 na RH Guaíba
-│   └── processados/      # dados limpos, separados por fonte
+│   │   ├── zenodo/       # impacto da enchente de maio/2024 na RH Guaíba
+│   │   └── geo/          # malha de bairros do Censo 2022 (IBGE)
+│   └── processados/      # dados limpos, separados por fonte (lidos pelo dashboard)
 │       ├── INCT/
 │       ├── IBGE/
-│       └── zenodo/
-├── scripts/              # scripts de coleta e limpeza
+│       ├── zenodo/
+│       └── geo/
+├── scripts/              # scripts de coleta e limpeza (preparar_dados.py roda todos)
 ├── notebooks/
 │   └── exploracao/       # notebooks de EDA (textual e gráfica)
 ├── relatorios/
-│   ├── base_dados.md
-│   ├── limpeza_dados.md
-│   └── dashboard.md
+│   ├── base_dados.md     # fonte do relatório de levantamento de bases
+│   ├── base_dados.pdf
+│   ├── limpeza_dados.md  # fonte do relatório de limpeza dos dados
+│   ├── limpeza_dados.pdf
+│   ├── dashboard.md      # fonte do relatório do dashboard
+│   ├── dashboard.pdf
+│   └── img/              # capturas de tela usadas no relatório
 └── app/                  # código do dashboard
 ```
 
@@ -153,3 +184,8 @@ Os scripts de coleta e limpeza ficam em `scripts/`, o código do dashboard em `a
 - Conteúdo: Dados municipais consolidados do impacto das inundações de maio de 2024 na Região Hidrográfica do Guaíba (139 municípios), abrangendo população e domicílios afetados, áreas urbanas e rurais inundadas, vias atingidas e equipamentos públicos.
 - Link: https://zenodo.org/records/11177244?preview_file=analise_ada_rhguaiba_municipios.csv
 
+### Malha de bairros (IBGE, Censo 2022)
+
+- Arquivo: `dados/originais/geo/RS_bairros_CD2022.zip`
+- Conteúdo: limites dos bairros do Rio Grande do Sul no Censo 2022; o script `scripts/malha_bairros.py` filtra Porto Alegre e liga cada polígono ao bairro do INCT pelo código do bairro do IBGE.
+- Link: https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_de_setores_censitarios__divisoes_intramunicipais/censo_2022/bairros/shp/UF/RS_bairros_CD2022.zip
